@@ -1,0 +1,22 @@
+navbar:
+  blog_title: szk's blog
+  menu:
+    - name: Home
+      link: /
+    - name: Categories
+      link: /categories/
+    - name: Archives
+      link: /archives/
+    - name: Tags
+      link: /tags/
+
+index:
+  slogan:
+    enable: true
+    text: Welcome to szk's blog
+
+footer:
+  content: '<span>szk blog</span>'
+
+custom_js:
+  - /js/color-toggle.js

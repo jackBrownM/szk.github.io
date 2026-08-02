@@ -1,0 +1,32 @@
+<section class="hero">
+  <p class="eyebrow">Personal site · Future-proof · Minimal</p>
+  <h1>Turn your homepage into a clean, memorable business card.</h1>
+  <p class="lead">Neon gradients, glass cards, and clean typography, built for portfolios, technical blogs, and personal sites.</p>
+  <div class="hero-actions">
+    <a class="btn primary" href="#posts">Latest Posts</a>
+    <a class="btn ghost" href="/archives/">View Archives</a>
+  </div>
+</section>
+
+<section class="stats">
+  <div><strong><%= site.posts.length %></strong><span>Posts</span></div>
+  <div><strong>Hexo</strong><span>Engine</span></div>
+  <div><strong>2026</strong><span>Ready</span></div>
+</section>
+
+<section class="posts" id="posts">
+  <div class="section-head">
+    <h2>Latest Posts</h2>
+    <span>Featured content</span>
+  </div>
+  <div class="grid">
+    <% page.posts.each(function(post){ %>
+      <article class="card">
+        <div class="card-meta"><%= date(post.date, 'YYYY-MM-DD') %></div>
+        <h3><a href="<%- url_for(post.path) %>"><%= post.title %></a></h3>
+        <p><%= strip_html(post.excerpt || post.description || post.content).replace(/\s+/g, ' ').slice(0, 120) %>...</p>
+        <a class="more" href="<%- url_for(post.path) %>">Read more →</a>
+      </article>
+    <% }) %>
+  </div>
+</section>

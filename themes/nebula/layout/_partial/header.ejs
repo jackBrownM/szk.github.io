@@ -1,0 +1,8 @@
+<header class="topbar">
+  <a class="brand" href="<%- url_for('/') %>"><span>◆</span> <%= config.title %></a>
+  <nav class="nav">
+    <% Object.keys(theme.menu || {}).forEach(function(name){ %>
+      <a href="<%- url_for(theme.menu[name]) %>"><%= name %></a>
+    <% }) %>
+  </nav>
+</header>

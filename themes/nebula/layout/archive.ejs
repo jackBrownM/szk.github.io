@@ -1,0 +1,12 @@
+<section class="archive">
+  <p class="eyebrow">Archives</p>
+  <h1>All posts</h1>
+  <div class="archive-list">
+    <% page.posts.each(function(post){ %>
+      <a class="archive-item" href="<%- url_for(post.path) %>">
+        <span><%= date(post.date, 'YYYY-MM-DD') %></span>
+        <strong><%= post.title %></strong>
+      </a>
+    <% }) %>
+  </div>
+</section>

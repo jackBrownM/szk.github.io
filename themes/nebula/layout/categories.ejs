@@ -1,0 +1,12 @@
+<section class="archive">
+  <p class="eyebrow">Categories</p>
+  <h1>All categories</h1>
+  <div class="archive-list">
+    <% page.categories.forEach(function(category){ %>
+      <a class="archive-item" href="<%- url_for(category.path) %>">
+        <span><%= category.length %> posts</span>
+        <strong><%= category.name %></strong>
+      </a>
+    <% }) %>
+  </div>
+</section>
