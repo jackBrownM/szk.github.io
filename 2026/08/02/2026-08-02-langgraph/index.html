@@ -1,0 +1,1293 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/szk.github.io/img/fluid.png">
+  <link rel="icon" href="/szk.github.io/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="jackBrownM">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="📋 目录   模块 内容    一 是什么 &amp; 为什么需要   二 核心概念   三 State（状态）   四 Node（节点）   五 Edge（边）   六 条件分支   七 Graph 构建与运行   八 消息与对话   九 Tool Calling（工具调用）   十 Human-in-the-Loop（人工介入）   十一 持久化与 Checkpointer   十二 子图（">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LangGraph 入门笔记">
+<meta property="og:url" content="https://jackbrownm.github.io/szk.github.io/2026/08/02/2026-08-02-langgraph/index.html">
+<meta property="og:site_name" content="szk&#39;s blog">
+<meta property="og:description" content="📋 目录   模块 内容    一 是什么 &amp; 为什么需要   二 核心概念   三 State（状态）   四 Node（节点）   五 Edge（边）   六 条件分支   七 Graph 构建与运行   八 消息与对话   九 Tool Calling（工具调用）   十 Human-in-the-Loop（人工介入）   十一 持久化与 Checkpointer   十二 子图（">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-08-02T06:10:00.000Z">
+<meta property="article:modified_time" content="2026-08-02T05:40:01.016Z">
+<meta property="article:author" content="jackBrownM">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="LangChain">
+<meta property="article:tag" content="LangGraph">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>LangGraph 入门笔记 - szk&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/szk.github.io/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/szk.github.io/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/szk.github.io/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"jackbrownm.github.io","root":"/szk.github.io/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/szk.github.io/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/szk.github.io/js/utils.js" ></script>
+  <script  src="/szk.github.io/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/szk.github.io/">
+      <strong>szk&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/szk.github.io/" target="_self">
+                
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/szk.github.io/categories/" target="_self">
+                
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/szk.github.io/archives/" target="_self">
+                
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/szk.github.io/tags/" target="_self">
+                
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/szk.github.io/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>Home</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/szk.github.io/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>Categories</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/szk.github.io/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>Archives</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/szk.github.io/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>Tags</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>Search</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="Light"
+               data-label-dark="Dark">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">Dark</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/szk.github.io/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="LangGraph 入门笔记"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-08-02 14:10" pubdate>
+          August 2, 2026 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          15k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          122 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">LangGraph 入门笔记</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="📋-目录"><a href="#📋-目录" class="headerlink" title="📋 目录"></a>📋 目录</h2><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>一</td>
+<td>是什么 &amp; 为什么需要</td>
+</tr>
+<tr>
+<td>二</td>
+<td>核心概念</td>
+</tr>
+<tr>
+<td>三</td>
+<td>State（状态）</td>
+</tr>
+<tr>
+<td>四</td>
+<td>Node（节点）</td>
+</tr>
+<tr>
+<td>五</td>
+<td>Edge（边）</td>
+</tr>
+<tr>
+<td>六</td>
+<td>条件分支</td>
+</tr>
+<tr>
+<td>七</td>
+<td>Graph 构建与运行</td>
+</tr>
+<tr>
+<td>八</td>
+<td>消息与对话</td>
+</tr>
+<tr>
+<td>九</td>
+<td>Tool Calling（工具调用）</td>
+</tr>
+<tr>
+<td>十</td>
+<td>Human-in-the-Loop（人工介入）</td>
+</tr>
+<tr>
+<td>十一</td>
+<td>持久化与 Checkpointer</td>
+</tr>
+<tr>
+<td>十二</td>
+<td>子图（Subgraph）</td>
+</tr>
+<tr>
+<td>十三</td>
+<td>流式输出（Streaming）</td>
+</tr>
+<tr>
+<td>十四</td>
+<td>错误处理与重试</td>
+</tr>
+<tr>
+<td>十五</td>
+<td>Map-Reduce 并行</td>
+</tr>
+<tr>
+<td>十六</td>
+<td>多 Agent 架构</td>
+</tr>
+<tr>
+<td>十七</td>
+<td>LangGraph vs LangChain</td>
+</tr>
+<tr>
+<td>十八</td>
+<td>常见模式与最佳实践</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="一、是什么-为什么需要"><a href="#一、是什么-为什么需要" class="headerlink" title="一、是什么 &amp; 为什么需要"></a>一、是什么 &amp; 为什么需要</h2><h3 id="LangGraph-是什么"><a href="#LangGraph-是什么" class="headerlink" title="LangGraph 是什么"></a>LangGraph 是什么</h3><p>想象你在画流程图：<strong>“先做A，再看情况做B或C，如果不行就回去重做A”</strong>。</p>
+<p>LangGraph 就是<strong>把这种流程图变成可运行的 AI 程序</strong>的工具。LangChain 团队出品。</p>
+<h3 id="用外卖点单来理解"><a href="#用外卖点单来理解" class="headerlink" title="用外卖点单来理解"></a>用外卖点单来理解</h3><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli">你说<span class="hljs-string">&quot;我要一杯咖啡&quot;</span><br>  → AI 听懂了<br>  → 查库存（调工具）<br>  → 有货？→ 下单 → 回复你<span class="hljs-string">&quot;已下单&quot;</span><br>  → 没货？→ 推荐别的 → 等你再选 → 再查库存 → <span class="hljs-string">...</span>循环<br></code></pre></td></tr></table></figure>
+
+<p>这个过程有<strong>判断</strong>、有<strong>循环</strong>、有<strong>调工具</strong>，用普通的链式代码写很痛苦，LangGraph 画个图就搞定了。</p>
+<h3 id="为什么不直接用-LangChain"><a href="#为什么不直接用-LangChain" class="headerlink" title="为什么不直接用 LangChain"></a>为什么不直接用 LangChain</h3><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>用谁</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>用户问 → AI 答（一问一答）</td>
+<td>LangChain 够了</td>
+</tr>
+<tr>
+<td>用户问 → AI 查资料 → AI 答（RAG）</td>
+<td>LangChain 够了</td>
+</tr>
+<tr>
+<td>用户问 → AI 想 → 调工具 → 看结果 → 再想 → 可能再调 → 最终答</td>
+<td><strong>要用 LangGraph</strong></td>
+</tr>
+<tr>
+<td>需要人工审核才能继续</td>
+<td><strong>要用 LangGraph</strong></td>
+</tr>
+<tr>
+<td>多个 AI 协作完成任务</td>
+<td><strong>要用 LangGraph</strong></td>
+</tr>
+</tbody></table>
+<p>一句话：<strong>流程是直线用 LangChain，流程有岔路或回头路用 LangGraph</strong>。</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip install langgraph langchain-openai<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="二、核心概念"><a href="#二、核心概念" class="headerlink" title="二、核心概念"></a>二、核心概念</h2><p>LangGraph 就三样东西，<strong>记住这三个就懂了 80%</strong>：</p>
+<h3 id="用「导航地图」来理解"><a href="#用「导航地图」来理解" class="headerlink" title="用「导航地图」来理解"></a>用「导航地图」来理解</h3><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">你在 A 城市（起点 <span class="hljs-literal">START</span>）<br>  → 开车到 B 城市（<span class="hljs-keyword">Node</span> <span class="hljs-title">节点）</span><br><span class="hljs-title">  → 看路标决定去 C</span> 还是 D（条件边）<br>  → 到了 D 发现要回 B 补个东西（循环）<br>  → 最后到达目的地（END）<br></code></pre></td></tr></table></figure>
+
+<p>你的车上带着一个<strong>行李箱（State）</strong>，每到一个城市就往里面放东西或拿东西。</p>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>大白话</th>
+<th>类比</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>State（状态）</strong></td>
+<td>一个在所有步骤间传来传去的”数据包”</td>
+<td>行李箱</td>
+</tr>
+<tr>
+<td><strong>Node（节点）</strong></td>
+<td>每一步要做的事（一个函数）</td>
+<td>每个城市的任务</td>
+</tr>
+<tr>
+<td><strong>Edge（边）</strong></td>
+<td>步骤之间的连线，决定下一步去哪</td>
+<td>城市之间的路</td>
+</tr>
+<tr>
+<td><strong>Conditional Edge</strong></td>
+<td>根据情况走不同的路</td>
+<td>路口的指示牌</td>
+</tr>
+<tr>
+<td><strong>START</strong></td>
+<td>整个流程的起点</td>
+<td>出发地</td>
+</tr>
+<tr>
+<td><strong>END</strong></td>
+<td>整个流程的终点</td>
+<td>目的地</td>
+</tr>
+<tr>
+<td><strong>Graph</strong></td>
+<td>把上面的全部组合起来</td>
+<td>整张地图</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="三、State（状态）"><a href="#三、State（状态）" class="headerlink" title="三、State（状态）"></a>三、State（状态）</h2><h3 id="大白话"><a href="#大白话" class="headerlink" title="大白话"></a>大白话</h3><p>State 就是一个<strong>字典（dict）</strong>，里面装着你的 AI 程序运行过程中需要的所有数据。</p>
+<p>每个节点拿到这个字典 → 看看里面有什么 → 做点事 → 把结果放回去 → 传给下一个节点。</p>
+<h3 id="怎么定义"><a href="#怎么定义" class="headerlink" title="怎么定义"></a>怎么定义</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> TypedDict, Annotated<br><span class="hljs-keyword">from</span> langgraph.graph <span class="hljs-keyword">import</span> add_messages<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">State</span>(<span class="hljs-title class_ inherited__">TypedDict</span>):<br>    messages: Annotated[<span class="hljs-built_in">list</span>, add_messages]  <span class="hljs-comment"># 聊天记录</span><br>    user_name: <span class="hljs-built_in">str</span>                            <span class="hljs-comment"># 用户名</span><br>    step_count: <span class="hljs-built_in">int</span>                           <span class="hljs-comment"># 走了几步</span><br></code></pre></td></tr></table></figure>
+
+<p>这就是定义了一个行李箱，里面有三个格子：聊天记录、用户名、步数。</p>
+<h3 id="Reducer-新旧数据怎么合并"><a href="#Reducer-新旧数据怎么合并" class="headerlink" title="Reducer &#x3D; 新旧数据怎么合并"></a>Reducer &#x3D; 新旧数据怎么合并</h3><p>问题来了：节点往 State 里放数据时，<strong>新数据和旧数据怎么合并</strong>？</p>
+<table>
+<thead>
+<tr>
+<th>写法</th>
+<th>合并方式</th>
+<th>举例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Annotated[list, add_messages]</code></td>
+<td><strong>追加</strong>到列表后面</td>
+<td>旧的3条消息 + 新的1条 &#x3D; 4条</td>
+</tr>
+<tr>
+<td><code>Annotated[list, operator.add]</code></td>
+<td><strong>拼接</strong>列表</td>
+<td>[a,b] + [c] &#x3D; [a,b,c]</td>
+</tr>
+<tr>
+<td>不写 Annotated，直接 <code>str</code></td>
+<td><strong>覆盖</strong>旧值</td>
+<td>旧的”hello” → 新的”world”</td>
+</tr>
+</tbody></table>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> operator<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">State</span>(<span class="hljs-title class_ inherited__">TypedDict</span>):<br>    messages: Annotated[<span class="hljs-built_in">list</span>, add_messages]   <span class="hljs-comment"># 聊天记录：追加</span><br>    results: Annotated[<span class="hljs-built_in">list</span>, operator.add]    <span class="hljs-comment"># 结果列表：拼接</span><br>    current_step: <span class="hljs-built_in">str</span>                          <span class="hljs-comment"># 当前步骤：直接覆盖</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="节点怎么更新-State"><a href="#节点怎么更新-State" class="headerlink" title="节点怎么更新 State"></a>节点怎么更新 State</h3><p><strong>只返回你想改的字段</strong>，没提到的字段保持不变：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">my_node</span>(<span class="hljs-params">state: State</span>) -&gt; <span class="hljs-built_in">dict</span>:<br>    <span class="hljs-comment"># 只改了 current_step 和 results，messages 和 user_name 不动</span><br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;current_step&quot;</span>: <span class="hljs-string">&quot;done&quot;</span>, <span class="hljs-string">&quot;results&quot;</span>: [<span class="hljs-string">&quot;新结果&quot;</span>]&#125;<br></code></pre></td></tr></table></figure>
+
+<p>就像你只打开行李箱的某个格子，换个东西进去，其他格子不动。</p>
+<hr>
+<h2 id="四、Node（节点）"><a href="#四、Node（节点）" class="headerlink" title="四、Node（节点）"></a>四、Node（节点）</h2><h3 id="大白话-1"><a href="#大白话-1" class="headerlink" title="大白话"></a>大白话</h3><p>节点 &#x3D; <strong>一个普通的 Python 函数</strong>。</p>
+<p>它接收 State（行李箱），做点事，返回要更新的内容。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">greet</span>(<span class="hljs-params">state: State</span>) -&gt; <span class="hljs-built_in">dict</span>:<br>    name = state[<span class="hljs-string">&quot;user_name&quot;</span>]                    <span class="hljs-comment"># 从行李箱拿出用户名</span><br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;messages&quot;</span>: [AIMessage(content=<span class="hljs-string">f&quot;你好，<span class="hljs-subst">&#123;name&#125;</span>！&quot;</span>)]&#125;  <span class="hljs-comment"># 往行李箱放一条消息</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="注册到图里"><a href="#注册到图里" class="headerlink" title="注册到图里"></a>注册到图里</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langgraph.graph <span class="hljs-keyword">import</span> StateGraph<br><br>graph = StateGraph(State)<br>graph.add_node(<span class="hljs-string">&quot;greet&quot;</span>, greet)           <span class="hljs-comment"># 名字叫&quot;greet&quot;，干活的是 greet 函数</span><br>graph.add_node(<span class="hljs-string">&quot;process&quot;</span>, process_func)  <span class="hljs-comment"># 名字叫&quot;process&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="节点里可以干啥"><a href="#节点里可以干啥" class="headerlink" title="节点里可以干啥"></a>节点里可以干啥</h3><p>想干啥干啥，就是个普通函数：</p>
+<ul>
+<li>调用 ChatGPT &#x2F; Claude 等 LLM</li>
+<li>调用外部 API（查天气、查数据库）</li>
+<li>做数据处理（解析、计算、格式化）</li>
+<li>什么也不做，纯粹用来当路由（看看数据，决定下一步去哪）</li>
+</ul>
+<hr>
+<h2 id="五、Edge（边）"><a href="#五、Edge（边）" class="headerlink" title="五、Edge（边）"></a>五、Edge（边）</h2><h3 id="大白话-2"><a href="#大白话-2" class="headerlink" title="大白话"></a>大白话</h3><p>边 &#x3D; <strong>节点之间的连线</strong>，告诉程序”这步做完了下一步做什么”。</p>
+<h3 id="普通边：A-做完一定去-B"><a href="#普通边：A-做完一定去-B" class="headerlink" title="普通边：A 做完一定去 B"></a>普通边：A 做完一定去 B</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langgraph.graph <span class="hljs-keyword">import</span> START, END<br><br>graph.add_edge(START, <span class="hljs-string">&quot;greet&quot;</span>)       <span class="hljs-comment"># 程序开始 → 先执行 greet</span><br>graph.add_edge(<span class="hljs-string">&quot;greet&quot;</span>, <span class="hljs-string">&quot;process&quot;</span>)   <span class="hljs-comment"># greet 做完 → 执行 process</span><br>graph.add_edge(<span class="hljs-string">&quot;process&quot;</span>, END)       <span class="hljs-comment"># process 做完 → 结束</span><br></code></pre></td></tr></table></figure>
+
+<p>画出来就是：<code>START → greet → process → END</code></p>
+<h3 id="条件边：A-做完了，看情况去-B-或-C"><a href="#条件边：A-做完了，看情况去-B-或-C" class="headerlink" title="条件边：A 做完了，看情况去 B 或 C"></a>条件边：A 做完了，看情况去 B 或 C</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">decide_next</span>(<span class="hljs-params">state: State</span>) -&gt; <span class="hljs-built_in">str</span>:<br>    <span class="hljs-keyword">if</span> state[<span class="hljs-string">&quot;need_tool&quot;</span>]:<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;use_tool&quot;</span>     <span class="hljs-comment"># 需要工具 → 去 tool_node</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;respond&quot;</span>          <span class="hljs-comment"># 不需要 → 去 response_node</span><br><br>graph.add_conditional_edges(<span class="hljs-string">&quot;think&quot;</span>, decide_next, &#123;<br>    <span class="hljs-string">&quot;use_tool&quot;</span>: <span class="hljs-string">&quot;tool_node&quot;</span>,       <span class="hljs-comment"># 返回 &quot;use_tool&quot; → 走到 tool_node</span><br>    <span class="hljs-string">&quot;respond&quot;</span>: <span class="hljs-string">&quot;response_node&quot;</span>,    <span class="hljs-comment"># 返回 &quot;respond&quot; → 走到 response_node</span><br>&#125;)<br></code></pre></td></tr></table></figure>
+
+<p>就像一个路口，函数 <code>decide_next</code> 当路标，指向不同方向。</p>
+<hr>
+<h2 id="六、条件分支"><a href="#六、条件分支" class="headerlink" title="六、条件分支"></a>六、条件分支</h2><h3 id="用-if-else-做路由"><a href="#用-if-else-做路由" class="headerlink" title="用 if-else 做路由"></a>用 if-else 做路由</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">router</span>(<span class="hljs-params">state: State</span>) -&gt; <span class="hljs-built_in">str</span>:<br>    last_msg = state[<span class="hljs-string">&quot;messages&quot;</span>][-<span class="hljs-number">1</span>]<br>    <span class="hljs-keyword">if</span> <span class="hljs-string">&quot;天气&quot;</span> <span class="hljs-keyword">in</span> last_msg.content:<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;weather&quot;</span><br>    <span class="hljs-keyword">elif</span> <span class="hljs-string">&quot;新闻&quot;</span> <span class="hljs-keyword">in</span> last_msg.content:<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;news&quot;</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;general&quot;</span><br><br>graph.add_conditional_edges(<span class="hljs-string">&quot;classify&quot;</span>, router, &#123;<br>    <span class="hljs-string">&quot;weather&quot;</span>: <span class="hljs-string">&quot;weather_node&quot;</span>,<br>    <span class="hljs-string">&quot;news&quot;</span>: <span class="hljs-string">&quot;news_node&quot;</span>,<br>    <span class="hljs-string">&quot;general&quot;</span>: <span class="hljs-string">&quot;general_node&quot;</span>,<br>&#125;)<br></code></pre></td></tr></table></figure>
+
+<p>用户问天气 → 走天气节点；问新闻 → 走新闻节点；其他 → 走通用节点。</p>
+<h3 id="让-LLM-自己决定走哪条路"><a href="#让-LLM-自己决定走哪条路" class="headerlink" title="让 LLM 自己决定走哪条路"></a>让 LLM 自己决定走哪条路</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">llm_router</span>(<span class="hljs-params">state: State</span>) -&gt; <span class="hljs-built_in">str</span>:<br>    response = llm.invoke(<br>        <span class="hljs-string">&quot;判断用户意图，只回复 weather/news/general：&quot;</span> + state[<span class="hljs-string">&quot;messages&quot;</span>][-<span class="hljs-number">1</span>].content<br>    )<br>    <span class="hljs-keyword">return</span> response.content.strip()<br></code></pre></td></tr></table></figure>
+
+<p>让 AI 自己判断用户在问什么，比手写 if-else 更智能。</p>
+<h3 id="循环-LangGraph-最强大的能力"><a href="#循环-LangGraph-最强大的能力" class="headerlink" title="循环 &#x3D; LangGraph 最强大的能力"></a>循环 &#x3D; LangGraph 最强大的能力</h3><p><strong>这是 LangGraph 区别于 LangChain 的核心</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">should_continue</span>(<span class="hljs-params">state: State</span>) -&gt; <span class="hljs-built_in">str</span>:<br>    last_msg = state[<span class="hljs-string">&quot;messages&quot;</span>][-<span class="hljs-number">1</span>]<br>    <span class="hljs-keyword">if</span> last_msg.tool_calls:      <span class="hljs-comment"># AI 说&quot;我要用工具&quot;</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;tools&quot;</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;end&quot;</span>                  <span class="hljs-comment"># AI 说&quot;我想好了，直接回答&quot;</span><br><br>graph.add_conditional_edges(<span class="hljs-string">&quot;agent&quot;</span>, should_continue, &#123;<br>    <span class="hljs-string">&quot;tools&quot;</span>: <span class="hljs-string">&quot;tool_node&quot;</span>,        <span class="hljs-comment"># 去执行工具</span><br>    <span class="hljs-string">&quot;end&quot;</span>: END,                   <span class="hljs-comment"># 结束</span><br>&#125;)<br>graph.add_edge(<span class="hljs-string">&quot;tool_node&quot;</span>, <span class="hljs-string">&quot;agent&quot;</span>)  <span class="hljs-comment"># 工具执行完 → 回到 agent 继续想</span><br></code></pre></td></tr></table></figure>
+
+<p>整个过程：</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs 1c">用户提问 → AI 想 → <span class="hljs-string">&quot;我需要查天气&quot;</span> → 查天气工具 → 拿到结果<br>         → AI 再想 → <span class="hljs-string">&quot;我还需要查新闻&quot;</span> → 查新闻工具 → 拿到结果<br>         → AI 再想 → <span class="hljs-string">&quot;够了，我可以回答了&quot;</span> → 回答用户 → 结束<br></code></pre></td></tr></table></figure>
+
+<p><strong>来回循环，直到 AI 觉得信息够了为止</strong>。这就是 ReAct Agent 的工作原理。</p>
+<hr>
+<h2 id="七、Graph-构建与运行"><a href="#七、Graph-构建与运行" class="headerlink" title="七、Graph 构建与运行"></a>七、Graph 构建与运行</h2><h3 id="四步走：定义-→-搭建-→-编译-→-运行"><a href="#四步走：定义-→-搭建-→-编译-→-运行" class="headerlink" title="四步走：定义 → 搭建 → 编译 → 运行"></a>四步走：定义 → 搭建 → 编译 → 运行</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> TypedDict, Annotated<br><span class="hljs-keyword">from</span> langgraph.graph <span class="hljs-keyword">import</span> StateGraph, START, END, add_messages<br><span class="hljs-keyword">from</span> langchain_openai <span class="hljs-keyword">import</span> ChatOpenAI<br><span class="hljs-keyword">from</span> langchain_core.messages <span class="hljs-keyword">import</span> HumanMessage<br><br><span class="hljs-comment"># 第1步：定义 State（行李箱里有什么）</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">State</span>(<span class="hljs-title class_ inherited__">TypedDict</span>):<br>    messages: Annotated[<span class="hljs-built_in">list</span>, add_messages]<br><br><span class="hljs-comment"># 第2步：定义节点（每一步做什么）</span><br>llm = ChatOpenAI(model=<span class="hljs-string">&quot;gpt-4o-mini&quot;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">chatbot</span>(<span class="hljs-params">state: State</span>) -&gt; <span class="hljs-built_in">dict</span>:<br>    response = llm.invoke(state[<span class="hljs-string">&quot;messages&quot;</span>])<br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;messages&quot;</span>: [response]&#125;<br><br><span class="hljs-comment"># 第3步：搭建图（把节点连起来）</span><br>graph = StateGraph(State)<br>graph.add_node(<span class="hljs-string">&quot;chatbot&quot;</span>, chatbot)<br>graph.add_edge(START, <span class="hljs-string">&quot;chatbot&quot;</span>)<br>graph.add_edge(<span class="hljs-string">&quot;chatbot&quot;</span>, END)<br><br><span class="hljs-comment"># 第4步：编译 + 运行</span><br>app = graph.<span class="hljs-built_in">compile</span>()<br>result = app.invoke(&#123;<span class="hljs-string">&quot;messages&quot;</span>: [HumanMessage(content=<span class="hljs-string">&quot;你好&quot;</span>)]&#125;)<br><span class="hljs-built_in">print</span>(result[<span class="hljs-string">&quot;messages&quot;</span>][-<span class="hljs-number">1</span>].content)<br></code></pre></td></tr></table></figure>
+
+<p>就这么简单：<strong>定义数据 → 写函数 → 画连线 → 跑起来</strong>。</p>
+<h3 id="同步-异步"><a href="#同步-异步" class="headerlink" title="同步 &#x2F; 异步"></a>同步 &#x2F; 异步</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">result = app.invoke(<span class="hljs-built_in">input</span>)            <span class="hljs-comment"># 同步：等结果</span><br>result = <span class="hljs-keyword">await</span> app.ainvoke(<span class="hljs-built_in">input</span>)     <span class="hljs-comment"># 异步：不阻塞</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="看看图长什么样"><a href="#看看图长什么样" class="headerlink" title="看看图长什么样"></a>看看图长什么样</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> IPython.display <span class="hljs-keyword">import</span> Image, display<br>display(Image(app.get_graph().draw_mermaid_png()))<br></code></pre></td></tr></table></figure>
+
+<p>会画出一张流程图，方便你检查连线对不对。</p>
+<hr>
+<h2 id="八、消息与对话"><a href="#八、消息与对话" class="headerlink" title="八、消息与对话"></a>八、消息与对话</h2><h3 id="四种消息类型"><a href="#四种消息类型" class="headerlink" title="四种消息类型"></a>四种消息类型</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain_core.messages <span class="hljs-keyword">import</span> (<br>    HumanMessage,     <span class="hljs-comment"># 用户说的话</span><br>    AIMessage,        <span class="hljs-comment"># AI 回复的话</span><br>    SystemMessage,    <span class="hljs-comment"># 给 AI 的背景设定（&quot;你是一个翻译官&quot;）</span><br>    ToolMessage,      <span class="hljs-comment"># 工具执行后的返回结果</span><br>)<br></code></pre></td></tr></table></figure>
+
+<p>对话就是这四种消息的列表，来回交替。</p>
+<h3 id="add-messages-干了什么"><a href="#add-messages-干了什么" class="headerlink" title="add_messages 干了什么"></a>add_messages 干了什么</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">messages: Annotated[<span class="hljs-built_in">list</span>, add_messages]<br></code></pre></td></tr></table></figure>
+
+<p>你可能好奇这个 <code>add_messages</code> 有什么特别的？</p>
+<p><strong>它做了两件事</strong>：</p>
+<ol>
+<li>新消息来了 → <strong>追加到列表末尾</strong>（不会丢掉之前的聊天记录）</li>
+<li>如果新消息和某条旧消息 <strong>id 一样</strong> → <strong>替换那条旧的</strong>（而不是重复添加）</li>
+</ol>
+<p>这就是 LangGraph 管理对话历史的核心机制。</p>
+<h3 id="对话记忆"><a href="#对话记忆" class="headerlink" title="对话记忆"></a>对话记忆</h3><p>State 里的 messages 列表 &#x3D; 对话记忆。</p>
+<p>节点每次返回新消息，自动追加到 messages 里。下一个节点拿到的就是<strong>完整的对话历史</strong>。</p>
+<p>配合 Checkpointer（第十一节）还能<strong>跨会话记忆</strong>——关掉程序再打开，还记得上次聊了什么。</p>
+<hr>
+<h2 id="九、Tool-Calling（工具调用）"><a href="#九、Tool-Calling（工具调用）" class="headerlink" title="九、Tool Calling（工具调用）"></a>九、Tool Calling（工具调用）</h2><h3 id="大白话-3"><a href="#大白话-3" class="headerlink" title="大白话"></a>大白话</h3><p>有些事 AI 靠自己回答不了（比如实时天气），需要<strong>调用外部工具</strong>帮忙。</p>
+<p>流程：用户提问 → AI 说”我需要用天气工具” → 程序帮它调用 → 把结果告诉 AI → AI 组织语言回答用户。</p>
+<h3 id="第1步：定义工具"><a href="#第1步：定义工具" class="headerlink" title="第1步：定义工具"></a>第1步：定义工具</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain_core.tools <span class="hljs-keyword">import</span> tool<br><br><span class="hljs-meta">@tool</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">search_weather</span>(<span class="hljs-params">city: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:<br>    <span class="hljs-string">&quot;&quot;&quot;查询指定城市的天气&quot;&quot;&quot;</span>          <span class="hljs-comment"># 这行注释很重要，AI 靠它理解工具是干嘛的</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;city&#125;</span>今天晴，25°C&quot;</span><br><br><span class="hljs-meta">@tool</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">search_news</span>(<span class="hljs-params">topic: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:<br>    <span class="hljs-string">&quot;&quot;&quot;搜索相关新闻&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">f&quot;关于<span class="hljs-subst">&#123;topic&#125;</span>的最新新闻...&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="第2步：告诉-AI-有哪些工具可用"><a href="#第2步：告诉-AI-有哪些工具可用" class="headerlink" title="第2步：告诉 AI 有哪些工具可用"></a>第2步：告诉 AI 有哪些工具可用</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">tools = [search_weather, search_news]<br>llm_with_tools = llm.bind_tools(tools)   <span class="hljs-comment"># AI 现在知道自己能查天气和新闻了</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="第3步：搭建-Agent（最核心的代码）"><a href="#第3步：搭建-Agent（最核心的代码）" class="headerlink" title="第3步：搭建 Agent（最核心的代码）"></a>第3步：搭建 Agent（最核心的代码）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langgraph.prebuilt <span class="hljs-keyword">import</span> ToolNode<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">agent</span>(<span class="hljs-params">state: State</span>) -&gt; <span class="hljs-built_in">dict</span>:<br>    response = llm_with_tools.invoke(state[<span class="hljs-string">&quot;messages&quot;</span>])<br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;messages&quot;</span>: [response]&#125;<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">should_continue</span>(<span class="hljs-params">state: State</span>) -&gt; <span class="hljs-built_in">str</span>:<br>    <span class="hljs-keyword">if</span> state[<span class="hljs-string">&quot;messages&quot;</span>][-<span class="hljs-number">1</span>].tool_calls:   <span class="hljs-comment"># AI 的回复里有工具调用请求</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;tools&quot;</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;end&quot;</span>                            <span class="hljs-comment"># AI 直接给了答案</span><br><br>graph = StateGraph(State)<br>graph.add_node(<span class="hljs-string">&quot;agent&quot;</span>, agent)<br>graph.add_node(<span class="hljs-string">&quot;tools&quot;</span>, ToolNode(tools))    <span class="hljs-comment"># 自动执行工具的内置节点</span><br>graph.add_edge(START, <span class="hljs-string">&quot;agent&quot;</span>)<br>graph.add_conditional_edges(<span class="hljs-string">&quot;agent&quot;</span>, should_continue, &#123;<span class="hljs-string">&quot;tools&quot;</span>: <span class="hljs-string">&quot;tools&quot;</span>, <span class="hljs-string">&quot;end&quot;</span>: END&#125;)<br>graph.add_edge(<span class="hljs-string">&quot;tools&quot;</span>, <span class="hljs-string">&quot;agent&quot;</span>)             <span class="hljs-comment"># 工具执行完 → 回到 agent</span><br>app = graph.<span class="hljs-built_in">compile</span>()<br></code></pre></td></tr></table></figure>
+
+<h3 id="懒人版：一行搞定"><a href="#懒人版：一行搞定" class="headerlink" title="懒人版：一行搞定"></a>懒人版：一行搞定</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langgraph.prebuilt <span class="hljs-keyword">import</span> create_react_agent<br><br>app = create_react_agent(llm, tools)<br>result = app.invoke(&#123;<span class="hljs-string">&quot;messages&quot;</span>: [HumanMessage(content=<span class="hljs-string">&quot;北京天气怎么样？&quot;</span>)]&#125;)<br></code></pre></td></tr></table></figure>
+
+<p>上面那一堆代码，这一行全包了。学习时手动搭，生产时用这个就行。</p>
+<hr>
+<h2 id="十、Human-in-the-Loop（人工介入）"><a href="#十、Human-in-the-Loop（人工介入）" class="headerlink" title="十、Human-in-the-Loop（人工介入）"></a>十、Human-in-the-Loop（人工介入）</h2><h3 id="什么意思"><a href="#什么意思" class="headerlink" title="什么意思"></a>什么意思</h3><p>有些事不能让 AI 自动干——比如发邮件、转账、删数据。得<strong>暂停下来让人确认</strong>，人说”行”再继续。</p>
+<h3 id="怎么用"><a href="#怎么用" class="headerlink" title="怎么用"></a>怎么用</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langgraph.types <span class="hljs-keyword">import</span> interrupt, Command<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">send_email_node</span>(<span class="hljs-params">state: State</span>) -&gt; <span class="hljs-built_in">dict</span>:<br>    <span class="hljs-comment"># 走到这里时程序暂停，等人回复</span><br>    user_says = interrupt(<span class="hljs-string">&quot;即将给客户发邮件，确认吗？&quot;</span>)<br><br>    <span class="hljs-keyword">if</span> user_says == <span class="hljs-string">&quot;yes&quot;</span>:<br>        do_send_email()<br>        <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;messages&quot;</span>: [AIMessage(content=<span class="hljs-string">&quot;邮件已发送&quot;</span>)]&#125;<br>    <span class="hljs-keyword">else</span>:<br>        <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;messages&quot;</span>: [AIMessage(content=<span class="hljs-string">&quot;已取消&quot;</span>)]&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="暂停和恢复"><a href="#暂停和恢复" class="headerlink" title="暂停和恢复"></a>暂停和恢复</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langgraph.checkpoint.memory <span class="hljs-keyword">import</span> MemorySaver<br><br>app = graph.<span class="hljs-built_in">compile</span>(<br>    checkpointer=MemorySaver(),          <span class="hljs-comment"># 必须有 checkpointer 才能暂停</span><br>    interrupt_before=[<span class="hljs-string">&quot;send_email_node&quot;</span>]  <span class="hljs-comment"># 进这个节点前暂停</span><br>)<br><br>config = &#123;<span class="hljs-string">&quot;configurable&quot;</span>: &#123;<span class="hljs-string">&quot;thread_id&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>&#125;&#125;<br><br><span class="hljs-comment"># 第一次运行 → 到 send_email_node 前自动暂停</span><br>result = app.invoke(<span class="hljs-built_in">input</span>, config)<br><span class="hljs-comment"># 这时候程序停了，等你确认</span><br><br><span class="hljs-comment"># 人确认后，继续执行</span><br>result = app.invoke(Command(resume=<span class="hljs-string">&quot;yes&quot;</span>), config)<br></code></pre></td></tr></table></figure>
+
+<h3 id="三种暂停时机"><a href="#三种暂停时机" class="headerlink" title="三种暂停时机"></a>三种暂停时机</h3><table>
+<thead>
+<tr>
+<th>方式</th>
+<th>什么时候停</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>interrupt_before=[&quot;节点名&quot;]</code></td>
+<td><strong>进入</strong>该节点前停</td>
+</tr>
+<tr>
+<td><code>interrupt_after=[&quot;节点名&quot;]</code></td>
+<td>该节点执行<strong>完之后</strong>停</td>
+</tr>
+<tr>
+<td>代码里写 <code>interrupt()</code></td>
+<td>节点函数<strong>内部任意位置</strong>停</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="十一、持久化与-Checkpointer"><a href="#十一、持久化与-Checkpointer" class="headerlink" title="十一、持久化与 Checkpointer"></a>十一、持久化与 Checkpointer</h2><h3 id="大白话-4"><a href="#大白话-4" class="headerlink" title="大白话"></a>大白话</h3><p>Checkpointer &#x3D; <strong>自动存档</strong>。</p>
+<p>就像游戏打到一半存个档，下次打开继续。Checkpointer 帮你保存 AI 应用的状态（聊天记录等），关掉程序再打开，还能接着聊。</p>
+<h3 id="三个用途"><a href="#三个用途" class="headerlink" title="三个用途"></a>三个用途</h3><ol>
+<li><strong>对话记忆</strong>：同一个用户下次来还记得之前聊过什么</li>
+<li><strong>暂停恢复</strong>：人工介入时需要存档，人确认后从存档点继续</li>
+<li><strong>时间旅行</strong>：回退到之前某个时刻的状态</li>
+</ol>
+<h3 id="最简单的用法（内存存储，重启就没了）"><a href="#最简单的用法（内存存储，重启就没了）" class="headerlink" title="最简单的用法（内存存储，重启就没了）"></a>最简单的用法（内存存储，重启就没了）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langgraph.checkpoint.memory <span class="hljs-keyword">import</span> MemorySaver<br><br>app = graph.<span class="hljs-built_in">compile</span>(checkpointer=MemorySaver())<br><br>config = &#123;<span class="hljs-string">&quot;configurable&quot;</span>: &#123;<span class="hljs-string">&quot;thread_id&quot;</span>: <span class="hljs-string">&quot;user-123&quot;</span>&#125;&#125;  <span class="hljs-comment"># 用 thread_id 区分不同用户/会话</span><br><br><span class="hljs-comment"># 第一轮对话</span><br>app.invoke(&#123;<span class="hljs-string">&quot;messages&quot;</span>: [HumanMessage(content=<span class="hljs-string">&quot;我叫张三&quot;</span>)]&#125;, config)<br><br><span class="hljs-comment"># 第二轮对话（同一个 thread_id → 有记忆）</span><br>result = app.invoke(&#123;<span class="hljs-string">&quot;messages&quot;</span>: [HumanMessage(content=<span class="hljs-string">&quot;我叫什么名字？&quot;</span>)]&#125;, config)<br><span class="hljs-comment"># AI 能回答&quot;你叫张三&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="持久化存储（重启不丢）"><a href="#持久化存储（重启不丢）" class="headerlink" title="持久化存储（重启不丢）"></a>持久化存储（重启不丢）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 存到 SQLite 文件</span><br><span class="hljs-keyword">from</span> langgraph.checkpoint.sqlite <span class="hljs-keyword">import</span> SqliteSaver<br>checkpointer = SqliteSaver.from_conn_string(<span class="hljs-string">&quot;checkpoints.db&quot;</span>)<br><br><span class="hljs-comment"># 存到 PostgreSQL 数据库</span><br><span class="hljs-keyword">from</span> langgraph.checkpoint.postgres <span class="hljs-keyword">import</span> PostgresSaver<br>checkpointer = PostgresSaver.from_conn_string(<span class="hljs-string">&quot;postgresql://user:pass@host/db&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>生产环境用数据库存，开发用 MemorySaver 就行。</p>
+<h3 id="查看历史存档"><a href="#查看历史存档" class="headerlink" title="查看历史存档"></a>查看历史存档</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> state <span class="hljs-keyword">in</span> app.get_state_history(config):<br>    <span class="hljs-built_in">print</span>(state.values[<span class="hljs-string">&quot;messages&quot;</span>][-<span class="hljs-number">1</span>].content)<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="十二、子图（Subgraph）"><a href="#十二、子图（Subgraph）" class="headerlink" title="十二、子图（Subgraph）"></a>十二、子图（Subgraph）</h2><h3 id="大白话-5"><a href="#大白话-5" class="headerlink" title="大白话"></a>大白话</h3><p>流程太复杂时，把一部分<strong>打包成一个”小流程图”</strong>，然后在主流程图里当一个节点用。</p>
+<p>就像写代码把复杂逻辑抽成函数一样。</p>
+<h3 id="先做一个小图"><a href="#先做一个小图" class="headerlink" title="先做一个小图"></a>先做一个小图</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">ResearchState</span>(<span class="hljs-title class_ inherited__">TypedDict</span>):<br>    topic: <span class="hljs-built_in">str</span><br>    findings: <span class="hljs-built_in">str</span><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">search</span>(<span class="hljs-params">state: ResearchState</span>) -&gt; <span class="hljs-built_in">dict</span>:<br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;findings&quot;</span>: <span class="hljs-string">f&quot;关于<span class="hljs-subst">&#123;state[<span class="hljs-string">&#x27;topic&#x27;</span>]&#125;</span>的研究结果...&quot;</span>&#125;<br><br>research_graph = StateGraph(ResearchState)<br>research_graph.add_node(<span class="hljs-string">&quot;search&quot;</span>, search)<br>research_graph.add_edge(START, <span class="hljs-string">&quot;search&quot;</span>)<br>research_graph.add_edge(<span class="hljs-string">&quot;search&quot;</span>, END)<br>research_app = research_graph.<span class="hljs-built_in">compile</span>()   <span class="hljs-comment"># 编译成独立的小应用</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="在主图中当节点用"><a href="#在主图中当节点用" class="headerlink" title="在主图中当节点用"></a>在主图中当节点用</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MainState</span>(<span class="hljs-title class_ inherited__">TypedDict</span>):<br>    messages: Annotated[<span class="hljs-built_in">list</span>, add_messages]<br>    topic: <span class="hljs-built_in">str</span>        <span class="hljs-comment"># 和子图的 State 同名字段 → 自动传递</span><br>    findings: <span class="hljs-built_in">str</span>     <span class="hljs-comment"># 和子图的 State 同名字段 → 自动传递</span><br><br>main_graph = StateGraph(MainState)<br>main_graph.add_node(<span class="hljs-string">&quot;research&quot;</span>, research_app)  <span class="hljs-comment"># 子图直接当节点！</span><br>main_graph.add_node(<span class="hljs-string">&quot;respond&quot;</span>, respond_func)<br>main_graph.add_edge(START, <span class="hljs-string">&quot;research&quot;</span>)<br>main_graph.add_edge(<span class="hljs-string">&quot;research&quot;</span>, <span class="hljs-string">&quot;respond&quot;</span>)<br>main_graph.add_edge(<span class="hljs-string">&quot;respond&quot;</span>, END)<br></code></pre></td></tr></table></figure>
+
+<p><strong>关键</strong>：主图 State 和子图 State 有<strong>同名字段</strong>时，数据自动传进传出，不用你手动搬。</p>
+<hr>
+<h2 id="十三、流式输出（Streaming）"><a href="#十三、流式输出（Streaming）" class="headerlink" title="十三、流式输出（Streaming）"></a>十三、流式输出（Streaming）</h2><h3 id="大白话-6"><a href="#大白话-6" class="headerlink" title="大白话"></a>大白话</h3><p>AI 写长回复时，你不想干等 10 秒才一次性显示。你想像 ChatGPT 一样<strong>一个字一个字蹦出来</strong>。</p>
+<h3 id="三种流式模式"><a href="#三种流式模式" class="headerlink" title="三种流式模式"></a>三种流式模式</h3><table>
+<thead>
+<tr>
+<th>模式</th>
+<th>返回什么</th>
+<th>适合</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&quot;values&quot;</code></td>
+<td>每走一步，返回<strong>完整的</strong> State</td>
+<td>调试</td>
+</tr>
+<tr>
+<td><code>&quot;updates&quot;</code></td>
+<td>每走一步，只返回<strong>这一步改了啥</strong></td>
+<td>一般用途</td>
+</tr>
+<tr>
+<td><code>&quot;messages&quot;</code></td>
+<td>逐 token 返回 AI 说的话</td>
+<td><strong>打字机效果</strong></td>
+</tr>
+</tbody></table>
+<h3 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 看每一步的更新</span><br><span class="hljs-keyword">for</span> event <span class="hljs-keyword">in</span> app.stream(&#123;<span class="hljs-string">&quot;messages&quot;</span>: [HumanMessage(content=<span class="hljs-string">&quot;写一首诗&quot;</span>)]&#125;, stream_mode=<span class="hljs-string">&quot;updates&quot;</span>):<br>    <span class="hljs-built_in">print</span>(event)<br></code></pre></td></tr></table></figure>
+
+<h3 id="打字机效果（逐字输出）"><a href="#打字机效果（逐字输出）" class="headerlink" title="打字机效果（逐字输出）"></a>打字机效果（逐字输出）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> msg, metadata <span class="hljs-keyword">in</span> app.stream(<span class="hljs-built_in">input</span>, stream_mode=<span class="hljs-string">&quot;messages&quot;</span>):<br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(msg, AIMessageChunk):<br>        <span class="hljs-built_in">print</span>(msg.content, end=<span class="hljs-string">&quot;&quot;</span>, flush=<span class="hljs-literal">True</span>)  <span class="hljs-comment"># 一个字一个字打出来</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="异步流式"><a href="#异步流式" class="headerlink" title="异步流式"></a>异步流式</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">async</span> <span class="hljs-keyword">for</span> event <span class="hljs-keyword">in</span> app.astream(<span class="hljs-built_in">input</span>, stream_mode=<span class="hljs-string">&quot;updates&quot;</span>):<br>    <span class="hljs-built_in">print</span>(event)<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="十四、错误处理与重试"><a href="#十四、错误处理与重试" class="headerlink" title="十四、错误处理与重试"></a>十四、错误处理与重试</h2><h3 id="为什么要重试"><a href="#为什么要重试" class="headerlink" title="为什么要重试"></a>为什么要重试</h3><p>AI 接口不稳定——网络超时、限频、服务抖动，都可能出错。出错了自动重试比直接崩掉好。</p>
+<h3 id="方式一：在函数里自己重试"><a href="#方式一：在函数里自己重试" class="headerlink" title="方式一：在函数里自己重试"></a>方式一：在函数里自己重试</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> tenacity <span class="hljs-keyword">import</span> retry, stop_after_attempt, wait_exponential<br><br><span class="hljs-meta">@retry(<span class="hljs-params">stop=stop_after_attempt(<span class="hljs-params"><span class="hljs-number">3</span></span>), wait=wait_exponential(<span class="hljs-params"><span class="hljs-built_in">min</span>=<span class="hljs-number">1</span>, <span class="hljs-built_in">max</span>=<span class="hljs-number">10</span></span>)</span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">call_llm</span>(<span class="hljs-params">messages</span>):<br>    <span class="hljs-keyword">return</span> llm.invoke(messages)  <span class="hljs-comment"># 失败了自动重试，最多3次</span><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">agent</span>(<span class="hljs-params">state: State</span>) -&gt; <span class="hljs-built_in">dict</span>:<br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;messages&quot;</span>: [call_llm(state[<span class="hljs-string">&quot;messages&quot;</span>])]&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="方式二：LangGraph-内置重试"><a href="#方式二：LangGraph-内置重试" class="headerlink" title="方式二：LangGraph 内置重试"></a>方式二：LangGraph 内置重试</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">graph.add_node(<span class="hljs-string">&quot;agent&quot;</span>, agent, retry=RetryPolicy(max_attempts=<span class="hljs-number">3</span>))<br></code></pre></td></tr></table></figure>
+
+<p>一行搞定，节点执行失败自动重试 3 次。</p>
+<h3 id="方式三：try-except-兜底"><a href="#方式三：try-except-兜底" class="headerlink" title="方式三：try-except 兜底"></a>方式三：try-except 兜底</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">safe_node</span>(<span class="hljs-params">state: State</span>) -&gt; <span class="hljs-built_in">dict</span>:<br>    <span class="hljs-keyword">try</span>:<br>        result = risky_operation()<br>        <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;results&quot;</span>: [result]&#125;<br>    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>        <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;messages&quot;</span>: [AIMessage(content=<span class="hljs-string">f&quot;出错了：<span class="hljs-subst">&#123;e&#125;</span>，请稍后再试&quot;</span>)]&#125;<br></code></pre></td></tr></table></figure>
+
+<p>出错不崩，给用户一个友好提示。</p>
+<hr>
+<h2 id="十五、Map-Reduce-并行"><a href="#十五、Map-Reduce-并行" class="headerlink" title="十五、Map-Reduce 并行"></a>十五、Map-Reduce 并行</h2><h3 id="大白话-7"><a href="#大白话-7" class="headerlink" title="大白话"></a>大白话</h3><p>一个大任务拆成多个小任务<strong>同时做</strong>，做完了<strong>合到一起</strong>。</p>
+<p>举例：要调研 AI、量化、区块链三个话题 → 三个同时查 → 合并结果。</p>
+<h3 id="怎么用-1"><a href="#怎么用-1" class="headerlink" title="怎么用"></a>怎么用</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langgraph.types <span class="hljs-keyword">import</span> Send<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">fan_out</span>(<span class="hljs-params">state: State</span>) -&gt; <span class="hljs-built_in">list</span>[Send]:<br>    <span class="hljs-string">&quot;&quot;&quot;拆任务：每个话题发一个到 research 节点&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">return</span> [Send(<span class="hljs-string">&quot;research&quot;</span>, &#123;<span class="hljs-string">&quot;topic&quot;</span>: t&#125;) <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> state[<span class="hljs-string">&quot;topics&quot;</span>]]<br>    <span class="hljs-comment"># topics = [&quot;AI&quot;, &quot;量化&quot;, &quot;区块链&quot;] → 同时启动3个 research</span><br><br>graph.add_conditional_edges(<span class="hljs-string">&quot;split&quot;</span>, fan_out)<br></code></pre></td></tr></table></figure>
+
+<h3 id="自动合并结果"><a href="#自动合并结果" class="headerlink" title="自动合并结果"></a>自动合并结果</h3><p>只要 State 里用了<strong>列表拼接的 Reducer</strong>，多个并行结果自动合到一起：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">State</span>(<span class="hljs-title class_ inherited__">TypedDict</span>):<br>    topics: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>]<br>    results: Annotated[<span class="hljs-built_in">list</span>, operator.add]  <span class="hljs-comment"># 三个并行节点的结果自动拼成一个列表</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="十六、多-Agent-架构"><a href="#十六、多-Agent-架构" class="headerlink" title="十六、多 Agent 架构"></a>十六、多 Agent 架构</h2><h3 id="大白话-8"><a href="#大白话-8" class="headerlink" title="大白话"></a>大白话</h3><p>一个 AI 干不过来，就让<strong>多个 AI 各司其职</strong>。</p>
+<h3 id="模式一：Supervisor（有个老板分活）"><a href="#模式一：Supervisor（有个老板分活）" class="headerlink" title="模式一：Supervisor（有个老板分活）"></a>模式一：Supervisor（有个老板分活）</h3><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs 1c">用户 → 老板 AI → <span class="hljs-string">&quot;这个问题需要搜索&quot;</span> → 搜索 AI → 结果给老板<br>                → <span class="hljs-string">&quot;这个需要写代码&quot;</span> → 编程 AI → 结果给老板<br>                → 老板汇总回复用户<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">supervisor</span>(<span class="hljs-params">state: State</span>) -&gt; <span class="hljs-built_in">dict</span>:<br>    response = llm.invoke(<span class="hljs-string">&quot;你是主管，根据需求选择 search/write/code&quot;</span>)<br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;next_agent&quot;</span>: response.content&#125;<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">route</span>(<span class="hljs-params">state: State</span>) -&gt; <span class="hljs-built_in">str</span>:<br>    <span class="hljs-keyword">return</span> state[<span class="hljs-string">&quot;next_agent&quot;</span>]<br><br>graph.add_conditional_edges(<span class="hljs-string">&quot;supervisor&quot;</span>, route, &#123;<br>    <span class="hljs-string">&quot;search&quot;</span>: <span class="hljs-string">&quot;search_agent&quot;</span>,<br>    <span class="hljs-string">&quot;write&quot;</span>: <span class="hljs-string">&quot;write_agent&quot;</span>,<br>    <span class="hljs-string">&quot;code&quot;</span>: <span class="hljs-string">&quot;code_agent&quot;</span>,<br>&#125;)<br>graph.add_edge(<span class="hljs-string">&quot;search_agent&quot;</span>, <span class="hljs-string">&quot;supervisor&quot;</span>)  <span class="hljs-comment"># 做完回到老板</span><br>graph.add_edge(<span class="hljs-string">&quot;write_agent&quot;</span>, <span class="hljs-string">&quot;supervisor&quot;</span>)<br>graph.add_edge(<span class="hljs-string">&quot;code_agent&quot;</span>, <span class="hljs-string">&quot;supervisor&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="模式二：平等协作（没有老板）"><a href="#模式二：平等协作（没有老板）" class="headerlink" title="模式二：平等协作（没有老板）"></a>模式二：平等协作（没有老板）</h3><figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sqf"><span class="hljs-built_in">Agent</span> A（写初稿）→ <span class="hljs-built_in">Agent</span> B（审核修改）→ <span class="hljs-built_in">Agent</span> C（配图）→ 完成<br></code></pre></td></tr></table></figure>
+
+<p>多个 AI 流水线式接力。</p>
+<h3 id="模式三：层级式（老板下面还有小组长）"><a href="#模式三：层级式（老板下面还有小组长）" class="headerlink" title="模式三：层级式（老板下面还有小组长）"></a>模式三：层级式（老板下面还有小组长）</h3><p>老板分任务给小组长，小组长再分给组员。用<strong>子图</strong>实现——每个小组是一个子图。</p>
+<hr>
+<h2 id="十七、LangGraph-vs-LangChain"><a href="#十七、LangGraph-vs-LangChain" class="headerlink" title="十七、LangGraph vs LangChain"></a>十七、LangGraph vs LangChain</h2><table>
+<thead>
+<tr>
+<th>对比</th>
+<th>LangChain</th>
+<th>LangGraph</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>流程形状</td>
+<td>直线（A→B→C）</td>
+<td>任意图（可以分叉、可以回头）</td>
+</tr>
+<tr>
+<td>能循环吗</td>
+<td>❌</td>
+<td>✅（Agent 核心能力）</td>
+</tr>
+<tr>
+<td>数据怎么传</td>
+<td>隐式（上一步输出&#x3D;下一步输入）</td>
+<td><strong>显式 State</strong>（清清楚楚）</td>
+</tr>
+<tr>
+<td>人工介入</td>
+<td>自己实现</td>
+<td>内置 interrupt</td>
+</tr>
+<tr>
+<td>保存对话</td>
+<td>自己实现</td>
+<td>内置 Checkpointer</td>
+</tr>
+<tr>
+<td>流式输出</td>
+<td>基础</td>
+<td>多种模式（values&#x2F;updates&#x2F;messages）</td>
+</tr>
+<tr>
+<td>学习难度</td>
+<td>低</td>
+<td>中等</td>
+</tr>
+<tr>
+<td>适合</td>
+<td>简单问答、RAG</td>
+<td>复杂 Agent、多步推理、多 Agent</td>
+</tr>
+</tbody></table>
+<p><strong>两者关系</strong>：LangGraph 是 LangChain 的<strong>升级版</strong>，底层用的还是 LangChain 的消息类型、LLM 接口、工具定义。LangGraph 不替代 LangChain，而是在它之上增加了图编排能力。</p>
+<hr>
+<h2 id="十八、常见模式与最佳实践"><a href="#十八、常见模式与最佳实践" class="headerlink" title="十八、常见模式与最佳实践"></a>十八、常见模式与最佳实践</h2><h3 id="五种常见流程图"><a href="#五种常见流程图" class="headerlink" title="五种常见流程图"></a>五种常见流程图</h3><p><strong>模式一：简单对话</strong>（最基础）</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">START</span> → chatbot → <span class="hljs-keyword">END</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>模式二：ReAct Agent</strong>（最常用）</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">START</span> → AI想 ←→ 用工具 → <span class="hljs-keyword">END</span><br>         ↑        │<br>         └────────┘  AI觉得信息够了就直接 <span class="hljs-keyword">END</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>模式三：路由分发</strong>（用户意图分类）</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">START → 分类器 → 天气节点 <span class="hljs-regexp">/ 新闻节点 /</span> 通用节点 → <span class="hljs-keyword">END</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>模式四：流水线</strong>（多步处理）</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">START</span> → 提取 → 转换 → 校验 → 保存 → <span class="hljs-keyword">END</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>模式五：人工审批</strong>（带人工环节）</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">START</span> → 起草 → 人工审核 → 通过？→ 发布 → <span class="hljs-keyword">END</span><br>                          ↓不通过<br>                         修改 → 回到起草<br></code></pre></td></tr></table></figure>
+
+<h3 id="最佳实践（记住这几条就行）"><a href="#最佳实践（记住这几条就行）" class="headerlink" title="最佳实践（记住这几条就行）"></a>最佳实践（记住这几条就行）</h3><table>
+<thead>
+<tr>
+<th>建议</th>
+<th>为什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>State 里只放必要的字段</td>
+<td>数据太多影响性能，也难维护</td>
+</tr>
+<tr>
+<td>一个节点只做一件事</td>
+<td>方便调试、复用、替换</td>
+</tr>
+<tr>
+<td>列表字段记得用 Reducer</td>
+<td>不然新数据会覆盖旧数据</td>
+</tr>
+<tr>
+<td>复杂流程拆成子图</td>
+<td>模块化，容易理解和测试</td>
+</tr>
+<tr>
+<td>LLM 调用一定要加重试</td>
+<td>AI 接口经常抽风</td>
+</tr>
+<tr>
+<td>生产环境存档用数据库</td>
+<td>MemorySaver 重启就没了</td>
+</tr>
+<tr>
+<td>限制最大循环次数</td>
+<td>防止 Agent 死循环烧钱</td>
+</tr>
+<tr>
+<td>接入 Langfuse 做监控</td>
+<td>看得见才能优化</td>
+</tr>
+</tbody></table>
+<h3 id="防止死循环"><a href="#防止死循环" class="headerlink" title="防止死循环"></a>防止死循环</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">result = app.invoke(<span class="hljs-built_in">input</span>, &#123;<span class="hljs-string">&quot;recursion_limit&quot;</span>: <span class="hljs-number">25</span>&#125;)  <span class="hljs-comment"># 最多循环25次就强制停</span><br></code></pre></td></tr></table></figure>
+
+<p>Agent 有可能反复调工具停不下来，这个参数是安全阀。</p>
+<h3 id="接入监控（Langfuse-LangSmith）"><a href="#接入监控（Langfuse-LangSmith）" class="headerlink" title="接入监控（Langfuse &#x2F; LangSmith）"></a>接入监控（Langfuse &#x2F; LangSmith）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># LangSmith（收费，LangChain官方）</span><br><span class="hljs-built_in">export</span> LANGCHAIN_TRACING_V2=<span class="hljs-literal">true</span><br><span class="hljs-built_in">export</span> LANGCHAIN_API_KEY=your_key<br><br><span class="hljs-comment"># 或用 Langfuse（开源免费，自部署）</span><br>pip install langfuse<br></code></pre></td></tr></table></figure>
+
+<p>接入后能看到：每个节点的输入输出、耗时、token 用量、报错信息。<strong>不接监控等于闭着眼开发</strong>。</p>
+<hr>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/szk.github.io/categories/ai/" class="category-chain-item">ai</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/szk.github.io/tags/LangChain/" class="print-no-link">#LangChain</a>
+      
+        <a href="/szk.github.io/tags/AI/" class="print-no-link">#AI</a>
+      
+        <a href="/szk.github.io/tags/LangGraph/" class="print-no-link">#LangGraph</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>LangGraph 入门笔记</div>
+      <div>https://jackbrownm.github.io/szk.github.io/2026/08/02/2026-08-02-langgraph/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>jackBrownM</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>August 2, 2026</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/szk.github.io/2026/08/02/2026-08-02-rabbitmq/" title="RabbitMQ 入门笔记">
+                        <span class="hidden-mobile">RabbitMQ 入门笔记</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+      <span>szk blog</span>
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/szk.github.io/js/events.js" ></script>
+<script  src="/szk.github.io/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/szk.github.io/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/szk.github.io/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/szk.github.io/js/color-toggle.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/szk.github.io/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
