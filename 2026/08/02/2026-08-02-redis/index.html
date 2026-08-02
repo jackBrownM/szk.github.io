@@ -1,0 +1,1437 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/szk.github.io/img/fluid.png">
+  <link rel="icon" href="/szk.github.io/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="jackBrownM">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、Redis 是什么？Redis &#x3D; Remote Dictionary Server（远程字典服务） 一句话理解：Redis 就是一个把数据放在内存里的超快数据库，像一个巨大的字典&#x2F;HashMap，你用 key 去存取 value。 核心特点：  数据存在内存中，读写速度 10万+&#x2F;秒 单线程处理命令（简单高效，无锁竞争，天然线程安全） 所有操作都是原子性的（要么">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis 入门笔记">
+<meta property="og:url" content="https://jackbrownm.github.io/szk.github.io/2026/08/02/2026-08-02-redis/index.html">
+<meta property="og:site_name" content="szk&#39;s blog">
+<meta property="og:description" content="一、Redis 是什么？Redis &#x3D; Remote Dictionary Server（远程字典服务） 一句话理解：Redis 就是一个把数据放在内存里的超快数据库，像一个巨大的字典&#x2F;HashMap，你用 key 去存取 value。 核心特点：  数据存在内存中，读写速度 10万+&#x2F;秒 单线程处理命令（简单高效，无锁竞争，天然线程安全） 所有操作都是原子性的（要么">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-08-02T06:30:00.000Z">
+<meta property="article:modified_time" content="2026-08-02T05:44:11.783Z">
+<meta property="article:author" content="jackBrownM">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="Redis">
+<meta property="article:tag" content="缓存">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Redis 入门笔记 - szk&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/szk.github.io/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/szk.github.io/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/szk.github.io/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"jackbrownm.github.io","root":"/szk.github.io/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/szk.github.io/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/szk.github.io/js/utils.js" ></script>
+  <script  src="/szk.github.io/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/szk.github.io/">
+      <strong>szk&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/szk.github.io/" target="_self">
+                
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/szk.github.io/categories/" target="_self">
+                
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/szk.github.io/archives/" target="_self">
+                
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/szk.github.io/tags/" target="_self">
+                
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/szk.github.io/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>Home</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/szk.github.io/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>Categories</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/szk.github.io/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>Archives</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/szk.github.io/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>Tags</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>Search</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="Light"
+               data-label-dark="Dark">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">Dark</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/szk.github.io/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Redis 入门笔记"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-08-02 14:30" pubdate>
+          August 2, 2026 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          26k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          220 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Redis 入门笔记</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="一、Redis-是什么？"><a href="#一、Redis-是什么？" class="headerlink" title="一、Redis 是什么？"></a>一、Redis 是什么？</h2><p>Redis &#x3D; <strong>Re</strong>mote <strong>Di</strong>ctionary <strong>S</strong>erver（远程字典服务）</p>
+<p><strong>一句话理解</strong>：Redis 就是一个把数据放在<strong>内存</strong>里的超快数据库，像一个巨大的字典&#x2F;HashMap，你用 key 去存取 value。</p>
+<p><strong>核心特点</strong>：</p>
+<ul>
+<li>数据存在内存中，读写速度 <strong>10万+&#x2F;秒</strong></li>
+<li>单线程处理命令（简单高效，无锁竞争，天然线程安全）</li>
+<li>所有操作都是<strong>原子性</strong>的（要么全做，要么不做）</li>
+<li>不只是 key-value，支持丰富的数据结构</li>
+</ul>
+<p><strong>能干什么</strong>：数据库、缓存、消息队列、排行榜、分布式锁、会话管理……</p>
+<hr>
+<h2 id="二、怎么连接-Redis？"><a href="#二、怎么连接-Redis？" class="headerlink" title="二、怎么连接 Redis？"></a>二、怎么连接 Redis？</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装（Ubuntu）</span><br><span class="hljs-built_in">sudo</span> apt install redis-server<br><br><span class="hljs-comment"># 启动</span><br>redis-server<br><br><span class="hljs-comment"># 连接（打开另一个终端）</span><br>redis-cli<br><br><span class="hljs-comment"># 连接远程 Redis</span><br>redis-cli -h 192.168.1.100 -p 6379 -a yourpassword<br><br><span class="hljs-comment"># 测试连接</span><br>127.0.0.1:6379&gt; PING<br>PONG    ← 返回这个就说明连上了<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、数据类型-实战命令（核心重点）"><a href="#三、数据类型-实战命令（核心重点）" class="headerlink" title="三、数据类型 + 实战命令（核心重点）"></a>三、数据类型 + 实战命令（核心重点）</h2><h3 id="1-String（字符串）——-最基础、最常用"><a href="#1-String（字符串）——-最基础、最常用" class="headerlink" title="1. String（字符串）—— 最基础、最常用"></a>1. String（字符串）—— 最基础、最常用</h3><p><strong>是什么</strong>：一个 key 对应一个 value，value 可以是文字、数字、甚至二进制数据，最大 512MB。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 基本操作 =====</span><br>SET name <span class="hljs-string">&quot;张三&quot;</span>          <span class="hljs-comment"># 存值</span><br>GET name                  <span class="hljs-comment"># 取值 → &quot;张三&quot;</span><br>DEL name                  <span class="hljs-comment"># 删除</span><br><br><span class="hljs-comment"># ===== 设置过期时间 =====</span><br>SET token <span class="hljs-string">&quot;abc123&quot;</span> EX 3600      <span class="hljs-comment"># 存值，3600秒后自动删除</span><br>SET token <span class="hljs-string">&quot;abc123&quot;</span> PX 5000      <span class="hljs-comment"># 5000毫秒后删除</span><br>TTL token                        <span class="hljs-comment"># 查看剩余秒数</span><br>PERSIST token                    <span class="hljs-comment"># 移除过期时间，变成永久</span><br><br><span class="hljs-comment"># ===== 批量操作 =====</span><br>MSET name <span class="hljs-string">&quot;张三&quot;</span> age <span class="hljs-string">&quot;25&quot;</span> city <span class="hljs-string">&quot;北京&quot;</span>   <span class="hljs-comment"># 一次设多个</span><br>MGET name age city                       <span class="hljs-comment"># 一次取多个</span><br><br><span class="hljs-comment"># ===== 数字操作（计数器）=====</span><br>SET counter 100<br>INCR counter              <span class="hljs-comment"># +1 → 101</span><br>INCRBY counter 10         <span class="hljs-comment"># +10 → 111</span><br>DECR counter              <span class="hljs-comment"># -1 → 110</span><br>DECRBY counter 5          <span class="hljs-comment"># -5 → 105</span><br><br><span class="hljs-comment"># ===== 分布式锁（重要！）=====</span><br>SET lock:order123 <span class="hljs-string">&quot;holder1&quot;</span> NX EX 30<br><span class="hljs-comment"># NX = 只在key不存在时才设置（不存在才加锁）</span><br><span class="hljs-comment"># EX 30 = 30秒过期（防止死锁）</span><br><span class="hljs-comment"># 返回 OK = 加锁成功，返回 nil = 锁已被别人持有</span><br><br><span class="hljs-comment"># ===== 追加与长度 =====</span><br>APPEND name <span class="hljs-string">&quot; 你好&quot;</span>       <span class="hljs-comment"># name 变成 &quot;张三 你好&quot;</span><br>STRLEN name               <span class="hljs-comment"># 获取长度</span><br><br><span class="hljs-comment"># ===== 先取再删 =====</span><br>GETDEL token              <span class="hljs-comment"># 取出值，同时删掉这个 key</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>常见用途</strong>：缓存、计数器、分布式锁、Session 存储</p>
+<hr>
+<h3 id="2-Hash（哈希）——-存对象最合适"><a href="#2-Hash（哈希）——-存对象最合适" class="headerlink" title="2. Hash（哈希）—— 存对象最合适"></a>2. Hash（哈希）—— 存对象最合适</h3><p><strong>是什么</strong>：一个 key 里面有多个 field-value 对，就像一个小字典。非常适合存储对象。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 存储用户对象 =====</span><br>HSET user:1001 name <span class="hljs-string">&quot;张三&quot;</span> age 25 city <span class="hljs-string">&quot;北京&quot;</span> email <span class="hljs-string">&quot;zs@test.com&quot;</span><br><br><span class="hljs-comment"># ===== 读取 =====</span><br>HGET user:1001 name             <span class="hljs-comment"># 取单个字段 → &quot;张三&quot;</span><br>HMGET user:1001 name age        <span class="hljs-comment"># 取多个字段 → &quot;张三&quot; &quot;25&quot;</span><br>HGETALL user:1001               <span class="hljs-comment"># 取所有字段和值</span><br><span class="hljs-comment"># → &quot;name&quot; &quot;张三&quot; &quot;age&quot; &quot;25&quot; &quot;city&quot; &quot;北京&quot; &quot;email&quot; &quot;zs@test.com&quot;</span><br><br><span class="hljs-comment"># ===== 修改 =====</span><br>HSET user:1001 age 26           <span class="hljs-comment"># 修改年龄</span><br>HINCRBY user:1001 age 1         <span class="hljs-comment"># 年龄+1 → 27</span><br><br><span class="hljs-comment"># ===== 删除字段 =====</span><br>HDEL user:1001 email            <span class="hljs-comment"># 删掉 email 字段</span><br><br><span class="hljs-comment"># ===== 检查 =====</span><br>HEXISTS user:1001 name          <span class="hljs-comment"># 字段是否存在 → 1(是) / 0(否)</span><br>HLEN user:1001                  <span class="hljs-comment"># 字段数量 → 3</span><br>HKEYS user:1001                 <span class="hljs-comment"># 所有字段名</span><br>HVALS user:1001                 <span class="hljs-comment"># 所有字段值</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>对比 String 存对象</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ❌ String 方式：要取一个字段得把整个 JSON 取出来</span><br>SET user:1001 <span class="hljs-string">&#x27;&#123;&quot;name&quot;:&quot;张三&quot;,&quot;age&quot;:25&#125;&#x27;</span><br><br><span class="hljs-comment"># ✅ Hash 方式：可以只取/改某一个字段，更高效</span><br>HGET user:1001 name<br></code></pre></td></tr></table></figure>
+
+<p><strong>常见用途</strong>：存用户信息、购物车、配置项</p>
+<hr>
+<h3 id="3-List（列表）——-有序的消息队列"><a href="#3-List（列表）——-有序的消息队列" class="headerlink" title="3. List（列表）—— 有序的消息队列"></a>3. List（列表）—— 有序的消息队列</h3><p><strong>是什么</strong>：按插入顺序排列的字符串列表，可以从两端推入&#x2F;弹出，像一个双端队列。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 从左边插入 =====</span><br>LPUSH tasks <span class="hljs-string">&quot;任务A&quot;</span> <span class="hljs-string">&quot;任务B&quot;</span> <span class="hljs-string">&quot;任务C&quot;</span><br><span class="hljs-comment"># 列表变成：[任务C, 任务B, 任务A]（后进的在左边）</span><br><br><span class="hljs-comment"># ===== 从右边插入 =====</span><br>RPUSH tasks <span class="hljs-string">&quot;任务D&quot;</span><br><span class="hljs-comment"># 列表变成：[任务C, 任务B, 任务A, 任务D]</span><br><br><span class="hljs-comment"># ===== 查看列表 =====</span><br>LRANGE tasks 0 -1     <span class="hljs-comment"># 查看全部（0到-1表示从头到尾）</span><br>LRANGE tasks 0 2      <span class="hljs-comment"># 查看前3个</span><br>LLEN tasks             <span class="hljs-comment"># 列表长度 → 4</span><br>LINDEX tasks 0         <span class="hljs-comment"># 取第0个元素 → &quot;任务C&quot;</span><br><br><span class="hljs-comment"># ===== 弹出元素 =====</span><br>LPOP tasks             <span class="hljs-comment"># 从左边弹出 → &quot;任务C&quot;（列表少了一个）</span><br>RPOP tasks             <span class="hljs-comment"># 从右边弹出 → &quot;任务D&quot;</span><br><br><span class="hljs-comment"># ===== 阻塞弹出（消息队列核心！）=====</span><br>BLPOP tasks 30<br><span class="hljs-comment"># 从左边弹出，如果列表为空，就等待最多30秒</span><br><span class="hljs-comment"># 一有新数据进来立刻返回，非常适合做消息队列</span><br><br><span class="hljs-comment"># ===== 修剪列表 =====</span><br>LTRIM tasks 0 99       <span class="hljs-comment"># 只保留前100个元素（可用来限制列表长度）</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>用法示意 —— 简单消息队列</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 生产者：往队列里扔任务</span><br>RPUSH queue:emails <span class="hljs-string">&#x27;&#123;&quot;to&quot;:&quot;a@test.com&quot;,&quot;subject&quot;:&quot;你好&quot;&#125;&#x27;</span><br><br><span class="hljs-comment"># 消费者：从队列里取任务（阻塞等待）</span><br>BLPOP queue:emails 0    <span class="hljs-comment"># 0表示无限等待</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>常见用途</strong>：消息队列、最新动态列表（朋友圈）、任务队列</p>
+<hr>
+<h3 id="4-Set（集合）——-去重-集合运算"><a href="#4-Set（集合）——-去重-集合运算" class="headerlink" title="4. Set（集合）—— 去重 + 集合运算"></a>4. Set（集合）—— 去重 + 集合运算</h3><p><strong>是什么</strong>：无序、不重复的字符串集合。强项是<strong>交集、并集、差集</strong>运算。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 添加成员 =====</span><br>SADD tags:article:1 <span class="hljs-string">&quot;Redis&quot;</span> <span class="hljs-string">&quot;数据库&quot;</span> <span class="hljs-string">&quot;缓存&quot;</span><br>SADD tags:article:2 <span class="hljs-string">&quot;Redis&quot;</span> <span class="hljs-string">&quot;NoSQL&quot;</span> <span class="hljs-string">&quot;性能&quot;</span><br><br><span class="hljs-comment"># ===== 查看 =====</span><br>SMEMBERS tags:article:1     <span class="hljs-comment"># 所有成员 → &quot;Redis&quot; &quot;数据库&quot; &quot;缓存&quot;</span><br>SCARD tags:article:1        <span class="hljs-comment"># 成员数量 → 3</span><br>SISMEMBER tags:article:1 <span class="hljs-string">&quot;Redis&quot;</span>  <span class="hljs-comment"># 是否存在 → 1(是)</span><br><br><span class="hljs-comment"># ===== 删除 =====</span><br>SREM tags:article:1 <span class="hljs-string">&quot;缓存&quot;</span>   <span class="hljs-comment"># 删除指定成员</span><br><br><span class="hljs-comment"># ===== 集合运算（超实用！）=====</span><br><span class="hljs-comment"># 交集：两篇文章共同的标签</span><br>SINTER tags:article:1 tags:article:2    <span class="hljs-comment"># → &quot;Redis&quot;</span><br><br><span class="hljs-comment"># 并集：两篇文章所有标签</span><br>SUNION tags:article:1 tags:article:2    <span class="hljs-comment"># → &quot;Redis&quot; &quot;数据库&quot; &quot;缓存&quot; &quot;NoSQL&quot; &quot;性能&quot;</span><br><br><span class="hljs-comment"># 差集：文章1有但文章2没有的标签</span><br>SDIFF tags:article:1 tags:article:2     <span class="hljs-comment"># → &quot;数据库&quot; &quot;缓存&quot;</span><br><br><span class="hljs-comment"># ===== 随机取 =====</span><br>SRANDMEMBER tags:article:1 2   <span class="hljs-comment"># 随机取2个成员（不删除）</span><br>SPOP tags:article:1            <span class="hljs-comment"># 随机弹出1个（会删除）</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>实际场景 —— 共同好友</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">SADD friends:张三 <span class="hljs-string">&quot;李四&quot;</span> <span class="hljs-string">&quot;王五&quot;</span> <span class="hljs-string">&quot;赵六&quot;</span><br>SADD friends:李四 <span class="hljs-string">&quot;张三&quot;</span> <span class="hljs-string">&quot;王五&quot;</span> <span class="hljs-string">&quot;钱七&quot;</span><br><br>SINTER friends:张三 friends:李四   <span class="hljs-comment"># 共同好友 → &quot;王五&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>常见用途</strong>：标签、共同好友、去重、抽奖</p>
+<hr>
+<h3 id="5-Sorted-Set-ZSet（有序集合）——-排行榜神器"><a href="#5-Sorted-Set-ZSet（有序集合）——-排行榜神器" class="headerlink" title="5. Sorted Set &#x2F; ZSet（有序集合）—— 排行榜神器"></a>5. Sorted Set &#x2F; ZSet（有序集合）—— 排行榜神器</h3><p><strong>是什么</strong>：每个成员有一个分数（score），按分数自动排序。去重 + 排序。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 添加（分数 成员）=====</span><br>ZADD leaderboard 95 <span class="hljs-string">&quot;张三&quot;</span> 87 <span class="hljs-string">&quot;李四&quot;</span> 92 <span class="hljs-string">&quot;王五&quot;</span> 78 <span class="hljs-string">&quot;赵六&quot;</span><br><br><span class="hljs-comment"># ===== 查看排名（从低到高）=====</span><br>ZRANGE leaderboard 0 -1                <span class="hljs-comment"># 全部，从低到高</span><br>ZRANGE leaderboard 0 -1 WITHSCORES     <span class="hljs-comment"># 带分数</span><br><span class="hljs-comment"># → &quot;赵六&quot; &quot;78&quot; &quot;李四&quot; &quot;87&quot; &quot;王五&quot; &quot;92&quot; &quot;张三&quot; &quot;95&quot;</span><br><br><span class="hljs-comment"># ===== 查看排名（从高到低）=====</span><br>ZREVRANGE leaderboard 0 2              <span class="hljs-comment"># 前3名</span><br><span class="hljs-comment"># → &quot;张三&quot; &quot;王五&quot; &quot;李四&quot;</span><br><br><span class="hljs-comment"># ===== 查排名 =====</span><br>ZRANK leaderboard <span class="hljs-string">&quot;张三&quot;</span>       <span class="hljs-comment"># 从低到高的排名 → 3（第4名，从0开始）</span><br>ZREVRANK leaderboard <span class="hljs-string">&quot;张三&quot;</span>    <span class="hljs-comment"># 从高到低的排名 → 0（第1名）</span><br><br><span class="hljs-comment"># ===== 查/改分数 =====</span><br>ZSCORE leaderboard <span class="hljs-string">&quot;张三&quot;</span>      <span class="hljs-comment"># 查分数 → 95</span><br>ZINCRBY leaderboard 5 <span class="hljs-string">&quot;李四&quot;</span>   <span class="hljs-comment"># 李四加5分 → 92</span><br><br><span class="hljs-comment"># ===== 按分数范围查 =====</span><br>ZRANGEBYSCORE leaderboard 80 95     <span class="hljs-comment"># 80-95分之间的人</span><br>ZCOUNT leaderboard 90 100           <span class="hljs-comment"># 90-100分有几个人 → 2</span><br><br><span class="hljs-comment"># ===== 删除 =====</span><br>ZREM leaderboard <span class="hljs-string">&quot;赵六&quot;</span>             <span class="hljs-comment"># 删除指定成员</span><br>ZREMRANGEBYRANK leaderboard 0 0     <span class="hljs-comment"># 删除排名最低的</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>实际场景 —— 实时排行榜</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 用户得分</span><br>ZINCRBY game:leaderboard 10 <span class="hljs-string">&quot;player:1001&quot;</span><br><br><span class="hljs-comment"># 查看 Top 10</span><br>ZREVRANGE game:leaderboard 0 9 WITHSCORES<br></code></pre></td></tr></table></figure>
+
+<p><strong>常见用途</strong>：排行榜、延迟队列（用时间戳当score）、带权重排序</p>
+<hr>
+<h3 id="6-Stream（流）——-专业消息队列"><a href="#6-Stream（流）——-专业消息队列" class="headerlink" title="6. Stream（流）—— 专业消息队列"></a>6. Stream（流）—— 专业消息队列</h3><p><strong>是什么</strong>：Redis 5.0 引入的日志型数据结构，类似 Kafka。支持消费者组、消息确认，比 List 做队列更专业。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 发送消息 =====</span><br>XADD mystream * name <span class="hljs-string">&quot;张三&quot;</span> action <span class="hljs-string">&quot;login&quot;</span><br><span class="hljs-comment"># * 表示自动生成消息ID（时间戳-序号）</span><br><span class="hljs-comment"># 返回类似 &quot;1653000000000-0&quot;</span><br><br>XADD mystream * name <span class="hljs-string">&quot;李四&quot;</span> action <span class="hljs-string">&quot;purchase&quot;</span> item <span class="hljs-string">&quot;手机&quot;</span><br><br><span class="hljs-comment"># ===== 读取消息 =====</span><br>XRANGE mystream - +              <span class="hljs-comment"># 读取所有消息（-到+表示全部）</span><br>XRANGE mystream - + COUNT 5      <span class="hljs-comment"># 只读5条</span><br>XLEN mystream                    <span class="hljs-comment"># 消息数量</span><br><br><span class="hljs-comment"># ===== 创建消费者组 =====</span><br>XGROUP CREATE mystream group1 0<br><span class="hljs-comment"># group1：组名，0：从头开始消费</span><br><br><span class="hljs-comment"># ===== 消费者读取 =====</span><br>XREADGROUP GROUP group1 consumer1 COUNT 1 BLOCK 5000 STREAMS mystream &gt;<br><span class="hljs-comment"># consumer1 从 group1 里读1条新消息，最多等5秒</span><br><span class="hljs-comment"># &gt; 表示只读新的未消费消息</span><br><br><span class="hljs-comment"># ===== 确认消息已处理 =====</span><br>XACK mystream group1 <span class="hljs-string">&quot;1653000000000-0&quot;</span><br><br><span class="hljs-comment"># ===== 查看待处理消息 =====</span><br>XPENDING mystream group1 - + 10<br></code></pre></td></tr></table></figure>
+
+<p><strong>对比 List 和 Stream</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>List</th>
+<th>Stream</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>消息持久化</td>
+<td>弹出即删</td>
+<td>保留在流中</td>
+</tr>
+<tr>
+<td>消费者组</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>消息确认</td>
+<td>❌</td>
+<td>✅ ACK</td>
+</tr>
+<tr>
+<td>消息回溯</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+</tbody></table>
+<p><strong>常见用途</strong>：事件流、可靠消息队列、日志收集</p>
+<hr>
+<h3 id="7-Bitmap（位图）——-极省内存的统计"><a href="#7-Bitmap（位图）——-极省内存的统计" class="headerlink" title="7. Bitmap（位图）—— 极省内存的统计"></a>7. Bitmap（位图）—— 极省内存的统计</h3><p><strong>是什么</strong>：用一个 String 的每一位（bit）来存 0&#x2F;1，1 亿用户只需 12.5MB。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 记录用户签到 =====</span><br><span class="hljs-comment"># key = sign:用户ID:月份，offset = 日期</span><br>SETBIT sign:1001:202605 1 1     <span class="hljs-comment"># 5月1日签到</span><br>SETBIT sign:1001:202605 2 1     <span class="hljs-comment"># 5月2日签到</span><br>SETBIT sign:1001:202605 3 0     <span class="hljs-comment"># 5月3日没签到</span><br>SETBIT sign:1001:202605 15 1    <span class="hljs-comment"># 5月15日签到</span><br><br><span class="hljs-comment"># 查看某天是否签到</span><br>GETBIT sign:1001:202605 2       <span class="hljs-comment"># → 1（签到了）</span><br>GETBIT sign:1001:202605 3       <span class="hljs-comment"># → 0（没签）</span><br><br><span class="hljs-comment"># 统计本月签到天数</span><br>BITCOUNT sign:1001:202605       <span class="hljs-comment"># → 3</span><br><br><span class="hljs-comment"># ===== 统计活跃用户 =====</span><br><span class="hljs-comment"># 每天一个 key，用户ID当偏移量</span><br>SETBIT active:20260522 1001 1   <span class="hljs-comment"># 用户1001今天活跃</span><br>SETBIT active:20260522 1002 1   <span class="hljs-comment"># 用户1002今天活跃</span><br>SETBIT active:20260521 1001 1   <span class="hljs-comment"># 用户1001昨天也活跃</span><br><br><span class="hljs-comment"># 连续两天都活跃的用户（AND 运算）</span><br>BITOP AND active:both active:20260522 active:20260521<br>BITCOUNT active:both            <span class="hljs-comment"># → 1（只有1001两天都活跃）</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>常见用途</strong>：签到统计、活跃用户、在线状态、布隆过滤器</p>
+<hr>
+<h3 id="8-HyperLogLog-——-超省内存的去重计数"><a href="#8-HyperLogLog-——-超省内存的去重计数" class="headerlink" title="8. HyperLogLog —— 超省内存的去重计数"></a>8. HyperLogLog —— 超省内存的去重计数</h3><p><strong>是什么</strong>：用固定 12KB 内存就能统计 2^64 个不同元素的数量，有约 0.81% 误差。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== UV 统计 =====</span><br>PFADD page:index:uv <span class="hljs-string">&quot;user1&quot;</span> <span class="hljs-string">&quot;user2&quot;</span> <span class="hljs-string">&quot;user3&quot;</span><br>PFADD page:index:uv <span class="hljs-string">&quot;user1&quot;</span> <span class="hljs-string">&quot;user4&quot;</span>     <span class="hljs-comment"># user1 重复不算</span><br><br>PFCOUNT page:index:uv                    <span class="hljs-comment"># → 4（去重后的数量）</span><br><br><span class="hljs-comment"># 合并多天的 UV</span><br>PFADD page:index:uv:day1 <span class="hljs-string">&quot;user1&quot;</span> <span class="hljs-string">&quot;user2&quot;</span><br>PFADD page:index:uv:day2 <span class="hljs-string">&quot;user2&quot;</span> <span class="hljs-string">&quot;user3&quot;</span><br>PFMERGE page:index:uv:total page:index:uv:day1 page:index:uv:day2<br>PFCOUNT page:index:uv:total              <span class="hljs-comment"># → 3</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>何时用</strong>：只需要知道”有多少个不同的XXX”，不需要知道具体是谁，且允许小误差。</p>
+<hr>
+<h3 id="9-Geospatial（地理空间）——-附近的人"><a href="#9-Geospatial（地理空间）——-附近的人" class="headerlink" title="9. Geospatial（地理空间）—— 附近的人"></a>9. Geospatial（地理空间）—— 附近的人</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 添加位置（经度 纬度 名称）=====</span><br>GEOADD stores 116.397128 39.916527 <span class="hljs-string">&quot;北京店&quot;</span><br>GEOADD stores 121.473701 31.230416 <span class="hljs-string">&quot;上海店&quot;</span><br>GEOADD stores 113.264385 23.129112 <span class="hljs-string">&quot;广州店&quot;</span><br><br><span class="hljs-comment"># ===== 两点距离 =====</span><br>GEODIST stores <span class="hljs-string">&quot;北京店&quot;</span> <span class="hljs-string">&quot;上海店&quot;</span> km    <span class="hljs-comment"># → &quot;1067.5977&quot;（公里）</span><br><br><span class="hljs-comment"># ===== 查看坐标 =====</span><br>GEOPOS stores <span class="hljs-string">&quot;北京店&quot;</span>                 <span class="hljs-comment"># → 经度 纬度</span><br><br><span class="hljs-comment"># ===== 搜索附近 =====</span><br>GEOSEARCH stores FROMLONLAT 116.40 39.92 BYRADIUS 10 km ASC<br><span class="hljs-comment"># 从指定坐标出发，搜索 10 公里内的店，按距离从近到远</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>常见用途</strong>：附近的人&#x2F;店&#x2F;车、距离计算</p>
+<hr>
+<h2 id="四、Key-的通用操作"><a href="#四、Key-的通用操作" class="headerlink" title="四、Key 的通用操作"></a>四、Key 的通用操作</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 查看 key =====</span><br>EXISTS name             <span class="hljs-comment"># key 是否存在 → 1/0</span><br>TYPE name               <span class="hljs-comment"># key 的类型 → string/hash/list/set/zset/stream</span><br>OBJECT ENCODING name    <span class="hljs-comment"># 内部编码方式</span><br><br><span class="hljs-comment"># ===== 过期时间 =====</span><br>EXPIRE key 60           <span class="hljs-comment"># 60秒后过期</span><br>PEXPIRE key 5000        <span class="hljs-comment"># 5000毫秒后过期</span><br>EXPIREAT key 1716400000 <span class="hljs-comment"># 在指定 Unix 时间戳过期</span><br>TTL key                 <span class="hljs-comment"># 剩余秒数（-1=永不过期，-2=已过期/不存在）</span><br>PTTL key                <span class="hljs-comment"># 剩余毫秒数</span><br>PERSIST key             <span class="hljs-comment"># 移除过期时间</span><br><br><span class="hljs-comment"># ===== 查找 key =====</span><br><span class="hljs-comment"># ⚠️ 生产环境禁止用 KEYS！会阻塞整个 Redis！</span><br>KEYS user:*             <span class="hljs-comment"># 匹配所有 user: 开头的 key（仅测试用）</span><br><br><span class="hljs-comment"># ✅ 用 SCAN 代替，不阻塞</span><br>SCAN 0 MATCH user:* COUNT 100<br><span class="hljs-comment"># 返回：下一个游标 + 匹配到的 key 列表</span><br><span class="hljs-comment"># 游标为 0 时表示扫描完毕</span><br><br><span class="hljs-comment"># ===== 删除 =====</span><br>DEL key1 key2           <span class="hljs-comment"># 同步删除（大 key 会阻塞）</span><br>UNLINK key1 key2        <span class="hljs-comment"># ✅ 异步删除（推荐，后台慢慢删）</span><br><br><span class="hljs-comment"># ===== 重命名 =====</span><br>RENAME oldkey newkey<br>RENAMENX oldkey newkey  <span class="hljs-comment"># 仅当 newkey 不存在时才重命名</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、过期策略-内存淘汰（面试高频）"><a href="#五、过期策略-内存淘汰（面试高频）" class="headerlink" title="五、过期策略 &amp; 内存淘汰（面试高频）"></a>五、过期策略 &amp; 内存淘汰（面试高频）</h2><h3 id="Redis-怎么删除过期-key？"><a href="#Redis-怎么删除过期-key？" class="headerlink" title="Redis 怎么删除过期 key？"></a>Redis 怎么删除过期 key？</h3><p>采用 <strong>惰性删除 + 定期删除</strong> 双重策略：</p>
+<table>
+<thead>
+<tr>
+<th>策略</th>
+<th>怎么做</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>惰性删除</strong></td>
+<td>访问 key 时检查是否过期，过期才删</td>
+<td>省 CPU，但可能有大量过期 key 占内存</td>
+</tr>
+<tr>
+<td><strong>定期删除</strong></td>
+<td>每 100ms 随机抽取一些 key 检查并删除过期的</td>
+<td>折中方案，抽样检测</td>
+</tr>
+</tbody></table>
+<h3 id="内存满了怎么办？——-淘汰策略"><a href="#内存满了怎么办？——-淘汰策略" class="headerlink" title="内存满了怎么办？—— 淘汰策略"></a>内存满了怎么办？—— 淘汰策略</h3><p>在 <code>redis.conf</code> 里配置 <code>maxmemory-policy</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看当前策略</span><br>CONFIG GET maxmemory-policy<br><br><span class="hljs-comment"># 设置策略</span><br>CONFIG SET maxmemory-policy allkeys-lru<br></code></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>策略</th>
+<th>含义</th>
+<th>推荐场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>noeviction</code></td>
+<td>不淘汰，内存满了直接报错</td>
+<td>默认值，数据不能丢的场景</td>
+</tr>
+<tr>
+<td><strong><code>allkeys-lru</code></strong></td>
+<td>所有 key 中淘汰<strong>最近最少使用</strong>的</td>
+<td><strong>✅ 缓存最常用</strong></td>
+</tr>
+<tr>
+<td><code>volatile-lru</code></td>
+<td>只在设了过期时间的 key 中淘汰 LRU</td>
+<td>混合使用（有些key永不过期）</td>
+</tr>
+<tr>
+<td><code>allkeys-lfu</code></td>
+<td>所有 key 中淘汰<strong>使用频率最低</strong>的</td>
+<td>热点数据场景</td>
+</tr>
+<tr>
+<td><code>volatile-lfu</code></td>
+<td>过期 key 中淘汰 LFU</td>
+<td></td>
+</tr>
+<tr>
+<td><code>allkeys-random</code></td>
+<td>随机淘汰</td>
+<td></td>
+</tr>
+<tr>
+<td><code>volatile-ttl</code></td>
+<td>淘汰剩余 TTL 最短的</td>
+<td></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="六、持久化（数据怎么不丢？）"><a href="#六、持久化（数据怎么不丢？）" class="headerlink" title="六、持久化（数据怎么不丢？）"></a>六、持久化（数据怎么不丢？）</h2><h3 id="RDB-——-快照"><a href="#RDB-——-快照" class="headerlink" title="RDB —— 快照"></a>RDB —— 快照</h3><p><strong>原理</strong>：每隔一段时间，把内存中的所有数据拍个快照存到磁盘（<code>dump.rdb</code>）。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 手动触发</span><br>SAVE          <span class="hljs-comment"># 同步保存（阻塞！生产禁用）</span><br>BGSAVE        <span class="hljs-comment"># 后台保存（fork 子进程，推荐）</span><br><br><span class="hljs-comment"># 自动触发（redis.conf）</span><br>save 900 1      <span class="hljs-comment"># 900秒内有1次修改就保存</span><br>save 300 10     <span class="hljs-comment"># 300秒内有10次修改就保存</span><br>save 60 10000   <span class="hljs-comment"># 60秒内有10000次修改就保存</span><br></code></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>文件小、恢复快</td>
+<td>可能丢几分钟数据</td>
+</tr>
+<tr>
+<td>适合做备份</td>
+<td>大数据集 fork 耗时</td>
+</tr>
+</tbody></table>
+<h3 id="AOF-——-追加日志"><a href="#AOF-——-追加日志" class="headerlink" title="AOF —— 追加日志"></a>AOF —— 追加日志</h3><p><strong>原理</strong>：每个写命令都追加记录到日志文件，重启时重新执行一遍恢复数据。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 开启 AOF（redis.conf）</span><br>appendonly <span class="hljs-built_in">yes</span><br><br><span class="hljs-comment"># fsync 刷盘策略</span><br>appendfsync always      <span class="hljs-comment"># 每条命令都刷盘（最安全，最慢）</span><br>appendfsync everysec    <span class="hljs-comment"># 每秒刷一次（✅ 推荐，最多丢1秒）</span><br>appendfsync no          <span class="hljs-comment"># 交给 OS（最快，可能丢30秒数据）</span><br><br><span class="hljs-comment"># AOF 文件太大了？自动重写压缩</span><br><span class="hljs-comment"># Redis 会在后台把 AOF 重写成最小命令集</span><br>BGREWRITEAOF<br></code></pre></td></tr></table></figure>
+
+<p><strong>什么是 AOF 重写？</strong> 比如 INCR counter 执行了 10000 次，AOF 记了 10000 行。重写后变成一行 <code>SET counter 10000</code>。</p>
+<table>
+<thead>
+<tr>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数据几乎不丢</td>
+<td>文件比 RDB 大</td>
+</tr>
+<tr>
+<td>可读性好（都是命令）</td>
+<td>恢复比 RDB 慢</td>
+</tr>
+</tbody></table>
+<h3 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs">✅ 同时开启 RDB + AOF（推荐）<br>恢复时优先用 AOF（数据更完整）<br>RDB 用来做冷备份<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="七、事务"><a href="#七、事务" class="headerlink" title="七、事务"></a>七、事务</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 基本事务 =====</span><br>MULTI                    <span class="hljs-comment"># 开启事务</span><br>SET account:A 800        <span class="hljs-comment"># 命令入队（还没执行）</span><br>SET account:B 200        <span class="hljs-comment"># 命令入队</span><br>EXEC                     <span class="hljs-comment"># 一次性执行所有命令</span><br><br>DISCARD                  <span class="hljs-comment"># 放弃事务（在 EXEC 之前）</span><br><br><span class="hljs-comment"># ===== 乐观锁 —— WATCH =====</span><br>WATCH account:A          <span class="hljs-comment"># 监视这个 key</span><br>val = GET account:A      <span class="hljs-comment"># 读取当前值</span><br><br>MULTI<br>DECRBY account:A 100<br>INCRBY account:B 100<br>EXEC<br><span class="hljs-comment"># 如果在 WATCH 之后、EXEC 之前，account:A 被别人改了</span><br><span class="hljs-comment"># → EXEC 返回 nil，事务取消！（乐观锁生效）</span><br><span class="hljs-comment"># 没被改 → 正常执行</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>⚠️ 注意</strong>：Redis 事务<strong>不支持回滚</strong>！如果某条命令出错，其他命令照样执行。这和 MySQL 事务不一样，它保证的是「一批命令连续执行不被打断」。</p>
+<hr>
+<h2 id="八、Pub-Sub（发布-订阅）"><a href="#八、Pub-Sub（发布-订阅）" class="headerlink" title="八、Pub&#x2F;Sub（发布&#x2F;订阅）"></a>八、Pub&#x2F;Sub（发布&#x2F;订阅）</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 订阅者（先开一个终端）=====</span><br>SUBSCRIBE news:tech news:sports<br><span class="hljs-comment"># 阻塞等待消息...</span><br><br><span class="hljs-comment"># ===== 发布者（另一个终端）=====</span><br>PUBLISH news:tech <span class="hljs-string">&quot;Redis 8.0 发布了！&quot;</span><br><span class="hljs-comment"># 所有订阅了 news:tech 的客户端都能收到</span><br><br><span class="hljs-comment"># ===== 模式匹配订阅 =====</span><br>PSUBSCRIBE news:*<br><span class="hljs-comment"># 订阅所有 news: 开头的频道</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>特点</strong>：</p>
+<ul>
+<li><strong>at-most-once</strong>：消息不保存，离线收不到</li>
+<li>跨数据库（db0 发的，db1 也能收到）</li>
+<li>需要可靠消息？用 <strong>Stream</strong> 代替</li>
+</ul>
+<hr>
+<h2 id="九、主从复制（读写分离）"><a href="#九、主从复制（读写分离）" class="headerlink" title="九、主从复制（读写分离）"></a>九、主从复制（读写分离）</h2><p><strong>原理</strong>：一个主节点（写）+ 多个从节点（读），从节点自动同步主节点数据。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 从节点配置（redis.conf）</span><br>replicaof 192.168.1.100 6379    <span class="hljs-comment"># 指定主节点地址</span><br><br><span class="hljs-comment"># 或者动态设置</span><br>REPLICAOF 192.168.1.100 6379<br><br><span class="hljs-comment"># 查看复制状态</span><br>INFO replication<br></code></pre></td></tr></table></figure>
+
+<p><strong>同步流程</strong>：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-bullet">1.</span> 首次连接 → 全量同步：主节点生成 RDB → 发给从节点 → 从节点加载<br><span class="hljs-bullet">2.</span> 之后 → 增量同步：主节点把写命令实时传给从节点<br><span class="hljs-bullet">3.</span> 断线重连 → 部分重同步（PSYNC），只补发缺失的命令<br></code></pre></td></tr></table></figure>
+
+<p><strong>架构示意</strong>：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">            写请求<br>客户端 ──────────→ 主节点（Master）<br>                     │<br>            异步复制  ├──→ 从节点<span class="hljs-number">1</span>（<span class="hljs-keyword">Replica</span>）──→ 读请求<br>                     ├──→ 从节点<span class="hljs-number">2</span>（<span class="hljs-keyword">Replica</span>）──→ 读请求<br>                     └──→ 从节点<span class="hljs-number">3</span>（<span class="hljs-keyword">Replica</span>）──→ 读请求<br></code></pre></td></tr></table></figure>
+
+<p><strong>要点</strong>：</p>
+<ul>
+<li>异步复制（主不等从确认），性能高但可能丢数据</li>
+<li>从节点默认只读</li>
+<li>主挂了从不会自动升级（需要 Sentinel）</li>
+<li>⚠️ 主节点如果没开持久化，禁止自动重启（否则重启后数据为空，从节点会被清空）</li>
+</ul>
+<hr>
+<h2 id="十、Sentinel-哨兵（自动故障转移）"><a href="#十、Sentinel-哨兵（自动故障转移）" class="headerlink" title="十、Sentinel 哨兵（自动故障转移）"></a>十、Sentinel 哨兵（自动故障转移）</h2><p><strong>解决问题</strong>：主节点挂了，自动把一个从节点提升为新的主节点。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># sentinel.conf 配置</span><br>sentinel monitor mymaster 192.168.1.100 6379 2<br><span class="hljs-comment"># 监控主节点，2 = 至少2个哨兵同意才认为主节点挂了</span><br><br>sentinel down-after-milliseconds mymaster 5000<br><span class="hljs-comment"># 5秒没响应就认为挂了</span><br><br>sentinel failover-timeout mymaster 60000<br><span class="hljs-comment"># 故障转移超时时间</span><br><br><span class="hljs-comment"># 启动 Sentinel</span><br>redis-sentinel /path/to/sentinel.conf<br></code></pre></td></tr></table></figure>
+
+<p><strong>四大功能</strong>：</p>
+<ol>
+<li><strong>监控</strong>：不停 PING 主&#x2F;从节点</li>
+<li><strong>通知</strong>：故障时通知管理员或程序</li>
+<li><strong>自动故障转移</strong>：主节点挂了 → 投票选一个从节点升级为新主节点 → 其他从节点改为跟新主节点同步</li>
+<li><strong>配置中心</strong>：客户端问 Sentinel “谁是主节点？”</li>
+</ol>
+<p><strong>工作流程</strong>：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-bullet">1.</span> 哨兵持续 PING 主节点<br><span class="hljs-bullet">2.</span> 主节点无响应 → 标记为&quot;主观下线&quot;<br><span class="hljs-bullet">3.</span> 多个哨兵都认为挂了 → &quot;客观下线&quot;<br><span class="hljs-bullet">4.</span> 哨兵投票选出一个从节点 → 提升为新主节点<br><span class="hljs-bullet">5.</span> 通知其他从节点跟随新主节点<br><span class="hljs-bullet">6.</span> 通知客户端新的主节点地址<br></code></pre></td></tr></table></figure>
+
+<p><strong>部署要求</strong>：至少 <strong>3 个哨兵</strong>，分布在不同机器上。</p>
+<hr>
+<h2 id="十一、Redis-Cluster（集群-——-水平扩展）"><a href="#十一、Redis-Cluster（集群-——-水平扩展）" class="headerlink" title="十一、Redis Cluster（集群 —— 水平扩展）"></a>十一、Redis Cluster（集群 —— 水平扩展）</h2><p><strong>解决问题</strong>：单机内存不够&#x2F;性能不够，把数据分散到多台机器上。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 创建集群（6个节点：3主3从）</span><br>redis-cli --cluster create \\<br>  192.168.1.1:6379 192.168.1.2:6379 192.168.1.3:6379 \\<br>  192.168.1.4:6379 192.168.1.5:6379 192.168.1.6:6379 \\<br>  --cluster-replicas 1<br><br><span class="hljs-comment"># 连接集群（-c 启用集群模式，自动重定向）</span><br>redis-cli -c -h 192.168.1.1 -p 6379<br><br><span class="hljs-comment"># 查看集群信息</span><br>CLUSTER INFO<br>CLUSTER NODES<br></code></pre></td></tr></table></figure>
+
+<p><strong>核心原理</strong>：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-bullet">1.</span> 共 16384 个哈希槽（Hash Slot）<br><span class="hljs-bullet">2.</span> 每个 key 通过 CRC16(key) % 16384 算出属于哪个槽<br><span class="hljs-bullet">3.</span> 每个主节点负责一部分槽<br><br>例如3个节点：<br>  节点A → 槽 0~5460<br>  节点B → 槽 5461~10922<br>  节点C → 槽 10923~16383<br></code></pre></td></tr></table></figure>
+
+<p><strong>Hash Tag —— 让相关 key 落在同一节点</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 大括号 &#123;&#125; 里的部分用来计算哈希槽</span><br>SET &#123;user:1001&#125;:name <span class="hljs-string">&quot;张三&quot;</span><br>SET &#123;user:1001&#125;:age <span class="hljs-string">&quot;25&quot;</span><br><span class="hljs-comment"># 这两个 key 一定在同一个节点上（因为 hash tag 相同）</span><br><span class="hljs-comment"># 所以可以在事务/Lua 里一起操作</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>要点</strong>：</p>
+<ul>
+<li>不保证强一致性（异步复制，写可能丢失）</li>
+<li>需要两个端口：数据端口（6379）+ 集群总线端口（16379）</li>
+<li>⚠️ 不支持 NAT 环境，Docker 需用 <code>--net=host</code></li>
+</ul>
+<hr>
+<h2 id="十二、Lua-脚本（原子操作）"><a href="#十二、Lua-脚本（原子操作）" class="headerlink" title="十二、Lua 脚本（原子操作）"></a>十二、Lua 脚本（原子操作）</h2><p><strong>为什么用</strong>：多个命令需要原子执行（要么全做，要么全不做），比事务更强大。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 基本用法 =====</span><br>EVAL <span class="hljs-string">&quot;return redis.call(&#x27;GET&#x27;, KEYS[1])&quot;</span> 1 mykey<br><span class="hljs-comment"># 1 = key 的数量，mykey = 实际的 key</span><br><br><span class="hljs-comment"># ===== 实际例子：安全释放分布式锁 =====</span><br><span class="hljs-comment"># 只有锁的持有者才能释放（比较值后再删）</span><br>EVAL <span class="hljs-string">&quot;</span><br><span class="hljs-string">  if redis.call(&#x27;GET&#x27;, KEYS[1]) == ARGV[1] then</span><br><span class="hljs-string">    return redis.call(&#x27;DEL&#x27;, KEYS[1])</span><br><span class="hljs-string">  else</span><br><span class="hljs-string">    return 0</span><br><span class="hljs-string">  end</span><br><span class="hljs-string">&quot;</span> 1 lock:order123 holder1<br><span class="hljs-comment"># KEYS[1] = lock:order123</span><br><span class="hljs-comment"># ARGV[1] = holder1（锁持有者标识）</span><br><br><span class="hljs-comment"># ===== 实际例子：限流（固定窗口）=====</span><br>EVAL <span class="hljs-string">&quot;</span><br><span class="hljs-string">  local count = redis.call(&#x27;INCR&#x27;, KEYS[1])</span><br><span class="hljs-string">  if count == 1 then</span><br><span class="hljs-string">    redis.call(&#x27;EXPIRE&#x27;, KEYS[1], ARGV[1])</span><br><span class="hljs-string">  end</span><br><span class="hljs-string">  return count</span><br><span class="hljs-string">&quot;</span> 1 rate:user:1001 60<br><span class="hljs-comment"># 每60秒一个窗口，返回当前计数</span><br><span class="hljs-comment"># 如果 count &gt; 100 就拒绝请求</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>Redis 7.0+ 推荐用 Redis Functions</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 注册函数（一次注册，永久可用）</span><br>FUNCTION LOAD <span class="hljs-string">&quot;#!lua name=mylib\\nredis.register_function(&#x27;myfunc&#x27;, function(keys, args) return redis.call(&#x27;GET&#x27;, keys[1]) end)&quot;</span><br><br><span class="hljs-comment"># 调用函数</span><br>FCALL myfunc 1 mykey<br></code></pre></td></tr></table></figure>
+
+<p><strong>要点</strong>：脚本执行期间<strong>阻塞所有客户端</strong>，所以脚本要短小快速。</p>
+<hr>
+<h2 id="十三、Pipeline（管道-——-性能优化利器）"><a href="#十三、Pipeline（管道-——-性能优化利器）" class="headerlink" title="十三、Pipeline（管道 —— 性能优化利器）"></a>十三、Pipeline（管道 —— 性能优化利器）</h2><p><strong>问题</strong>：每条命令都要网络往返（RTT），100 条命令 &#x3D; 100 次往返。</p>
+<p><strong>方案</strong>：把多条命令打包一次发出去，一次返回。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># Python 示例</span><br><span class="hljs-keyword">import</span> redis<br>r = redis.Redis()<br><br><span class="hljs-comment"># ❌ 慢：100次网络往返</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">100</span>):<br>    r.<span class="hljs-built_in">set</span>(<span class="hljs-string">f&quot;key:<span class="hljs-subst">&#123;i&#125;</span>&quot;</span>, <span class="hljs-string">f&quot;value:<span class="hljs-subst">&#123;i&#125;</span>&quot;</span>)<br><br><span class="hljs-comment"># ✅ 快：1次网络往返</span><br>pipe = r.pipeline()<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">100</span>):<br>    pipe.<span class="hljs-built_in">set</span>(<span class="hljs-string">f&quot;key:<span class="hljs-subst">&#123;i&#125;</span>&quot;</span>, <span class="hljs-string">f&quot;value:<span class="hljs-subst">&#123;i&#125;</span>&quot;</span>)<br>pipe.execute()    <span class="hljs-comment"># 一次性发送并接收所有结果</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>：Pipeline 不是原子的（和事务不同），命令之间可能穿插其他客户端的命令。</p>
+<hr>
+<h2 id="十四、常见场景实战大全"><a href="#十四、常见场景实战大全" class="headerlink" title="十四、常见场景实战大全"></a>十四、常见场景实战大全</h2><h3 id="场景-1：缓存（最常见）"><a href="#场景-1：缓存（最常见）" class="headerlink" title="场景 1：缓存（最常见）"></a>场景 1：缓存（最常见）</h3><p><strong>流程</strong>：查缓存 → 没有 → 查数据库 → 写缓存</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 伪代码</span><br>result = GET user:1001<br><span class="hljs-keyword">if</span> result == nil:<br>    result = db.query(<span class="hljs-string">&quot;SELECT * FROM user WHERE id=1001&quot;</span>)<br>    SET user:1001 result EX 3600    <span class="hljs-comment"># 写入缓存，1小时过期</span><br><span class="hljs-built_in">return</span> result<br></code></pre></td></tr></table></figure>
+
+<p><strong>缓存三大问题</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>解释</th>
+<th>解决方案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>缓存穿透</strong></td>
+<td>查一个不存在的数据，每次都穿透到数据库</td>
+<td>① 缓存空值 <code>SET key &quot;&quot; EX 60</code> ② 布隆过滤器提前拦截</td>
+</tr>
+<tr>
+<td><strong>缓存击穿</strong></td>
+<td>一个热点 key 过期瞬间，大量请求打到数据库</td>
+<td>① 互斥锁（<code>SET lock NX EX</code>，只让一个请求去查库） ② 热点 key 永不过期 + 后台异步更新</td>
+</tr>
+<tr>
+<td><strong>缓存雪崩</strong></td>
+<td>大量 key 同时过期 &#x2F; Redis 宕机，数据库被压垮</td>
+<td>① 过期时间加随机值 <code>EX (3600 + random(0,300))</code> ② 多级缓存（本地缓存 + Redis） ③ 限流降级</td>
+</tr>
+</tbody></table>
+<p><strong>缓存更新策略</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>策略</th>
+<th>怎么做</th>
+<th>优缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Cache Aside（旁路缓存）</strong></td>
+<td>读：先读缓存，miss 则读 DB 写缓存；写：先更新 DB，再删缓存</td>
+<td>✅ 最常用、最推荐</td>
+</tr>
+<tr>
+<td><strong>Write Through（写穿透）</strong></td>
+<td>写操作同时写缓存和 DB</td>
+<td>实现复杂</td>
+</tr>
+<tr>
+<td><strong>Write Behind（写回）</strong></td>
+<td>只写缓存，异步批量刷 DB</td>
+<td>可能丢数据</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="场景-2：分布式锁"><a href="#场景-2：分布式锁" class="headerlink" title="场景 2：分布式锁"></a>场景 2：分布式锁</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 加锁 =====</span><br>SET lock:order:123 <span class="hljs-string">&quot;uuid-abc&quot;</span> NX EX 30<br><span class="hljs-comment"># NX = 不存在才设置（抢锁）</span><br><span class="hljs-comment"># EX 30 = 30秒超时（防死锁）</span><br><span class="hljs-comment"># value 用 UUID 标识持有者</span><br><br><span class="hljs-comment"># ===== 释放锁（必须用 Lua，保证原子性！）=====</span><br>EVAL <span class="hljs-string">&quot;</span><br><span class="hljs-string">  if redis.call(&#x27;GET&#x27;,KEYS[1]) == ARGV[1] then</span><br><span class="hljs-string">    return redis.call(&#x27;DEL&#x27;,KEYS[1])</span><br><span class="hljs-string">  else</span><br><span class="hljs-string">    return 0</span><br><span class="hljs-string">  end</span><br><span class="hljs-string">&quot;</span> 1 lock:order:123 <span class="hljs-string">&quot;uuid-abc&quot;</span><br><span class="hljs-comment"># 为什么用 Lua？因为 GET + DEL 两步必须原子执行</span><br><span class="hljs-comment"># 否则可能误删别人的锁</span><br><br><span class="hljs-comment"># ===== 锁续期（看门狗机制）=====</span><br><span class="hljs-comment"># 业务没做完，锁快过期了？开一个后台线程定时续期：</span><br>EXPIRE lock:order:123 30    <span class="hljs-comment"># 每 10 秒续到 30 秒</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>生产级方案</strong>：Redisson（Java）&#x2F; redis-py-lock（Python）已封装好，包含看门狗、可重入锁等。</p>
+<p><strong>多节点场景</strong>：用 <strong>RedLock 算法</strong>（向 N 个独立 Redis 节点加锁，多数成功才算加锁成功）。</p>
+<hr>
+<h3 id="场景-3：Session-会话管理"><a href="#场景-3：Session-会话管理" class="headerlink" title="场景 3：Session 会话管理"></a>场景 3：Session 会话管理</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 用户登录后，生成 session 存到 Redis</span><br>SET session:abc123def <span class="hljs-string">&#x27;&#123;&quot;userId&quot;:1001,&quot;name&quot;:&quot;张三&quot;,&quot;role&quot;:&quot;admin&quot;&#125;&#x27;</span> EX 1800<br><span class="hljs-comment"># 30 分钟过期</span><br><br><span class="hljs-comment"># 每次请求，用 Cookie 里的 sessionId 查 Redis</span><br>GET session:abc123def<br><span class="hljs-comment"># 返回用户信息 → 用户已登录</span><br><br><span class="hljs-comment"># 用户操作时续期</span><br>EXPIRE session:abc123def 1800<br><br><span class="hljs-comment"># 用户登出</span><br>DEL session:abc123def<br></code></pre></td></tr></table></figure>
+
+<p><strong>为什么用 Redis 存 Session？</strong></p>
+<ul>
+<li>多台应用服务器共享 Session（不再依赖本地内存）</li>
+<li>自动过期</li>
+<li>重启应用不丢 Session</li>
+</ul>
+<hr>
+<h3 id="场景-4：购物车"><a href="#场景-4：购物车" class="headerlink" title="场景 4：购物车"></a>场景 4：购物车</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 添加商品（Hash：用户ID → 商品ID → 数量）=====</span><br>HSET cart:user:1001 product:2001 2    <span class="hljs-comment"># 商品2001，数量2</span><br>HSET cart:user:1001 product:2002 1    <span class="hljs-comment"># 商品2002，数量1</span><br><br><span class="hljs-comment"># ===== 增加数量 =====</span><br>HINCRBY cart:user:1001 product:2001 1  <span class="hljs-comment"># 商品2001 数量+1 → 3</span><br><br><span class="hljs-comment"># ===== 减少数量 =====</span><br>HINCRBY cart:user:1001 product:2001 -1 <span class="hljs-comment"># 数量-1 → 2</span><br><br><span class="hljs-comment"># ===== 删除商品 =====</span><br>HDEL cart:user:1001 product:2002<br><br><span class="hljs-comment"># ===== 查看购物车 =====</span><br>HGETALL cart:user:1001<br><span class="hljs-comment"># → product:2001  2</span><br><br><span class="hljs-comment"># ===== 购物车商品数量 =====</span><br>HLEN cart:user:1001    <span class="hljs-comment"># → 1</span><br><br><span class="hljs-comment"># ===== 清空购物车 =====</span><br>DEL cart:user:1001<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="场景-5：点赞-收藏"><a href="#场景-5：点赞-收藏" class="headerlink" title="场景 5：点赞 &#x2F; 收藏"></a>场景 5：点赞 &#x2F; 收藏</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 用 Set 存储点赞用户（自动去重）=====</span><br><span class="hljs-comment"># 点赞</span><br>SADD like:article:5001 <span class="hljs-string">&quot;user:1001&quot;</span><br>SADD like:article:5001 <span class="hljs-string">&quot;user:1002&quot;</span><br><br><span class="hljs-comment"># 取消点赞</span><br>SREM like:article:5001 <span class="hljs-string">&quot;user:1001&quot;</span><br><br><span class="hljs-comment"># 是否已点赞（用于前端显示红心/灰心）</span><br>SISMEMBER like:article:5001 <span class="hljs-string">&quot;user:1001&quot;</span>  <span class="hljs-comment"># → 0（没点）</span><br>SISMEMBER like:article:5001 <span class="hljs-string">&quot;user:1002&quot;</span>  <span class="hljs-comment"># → 1（已点）</span><br><br><span class="hljs-comment"># 点赞总数</span><br>SCARD like:article:5001    <span class="hljs-comment"># → 1</span><br><br><span class="hljs-comment"># 所有点赞用户</span><br>SMEMBERS like:article:5001<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="场景-6：关注-粉丝-共同关注"><a href="#场景-6：关注-粉丝-共同关注" class="headerlink" title="场景 6：关注 &#x2F; 粉丝 &#x2F; 共同关注"></a>场景 6：关注 &#x2F; 粉丝 &#x2F; 共同关注</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 关注 =====</span><br>SADD following:user:1001 <span class="hljs-string">&quot;user:1002&quot;</span>   <span class="hljs-comment"># 1001 关注了 1002</span><br>SADD followers:user:1002 <span class="hljs-string">&quot;user:1001&quot;</span>   <span class="hljs-comment"># 1002 多了一个粉丝 1001</span><br><br><span class="hljs-comment"># ===== 取消关注 =====</span><br>SREM following:user:1001 <span class="hljs-string">&quot;user:1002&quot;</span><br>SREM followers:user:1002 <span class="hljs-string">&quot;user:1001&quot;</span><br><br><span class="hljs-comment"># ===== 我关注了谁 =====</span><br>SMEMBERS following:user:1001<br><br><span class="hljs-comment"># ===== 我的粉丝 =====</span><br>SMEMBERS followers:user:1001<br><br><span class="hljs-comment"># ===== 关注数 / 粉丝数 =====</span><br>SCARD following:user:1001     <span class="hljs-comment"># 关注数</span><br>SCARD followers:user:1001     <span class="hljs-comment"># 粉丝数</span><br><br><span class="hljs-comment"># ===== 共同关注 =====</span><br>SINTER following:user:1001 following:user:1002<br><br><span class="hljs-comment"># ===== 我关注的人也关注了他？（推荐关注） =====</span><br>SISMEMBER following:user:1002 <span class="hljs-string">&quot;user:1003&quot;</span><br><br><span class="hljs-comment"># ===== 互相关注（是否互粉）=====</span><br>SISMEMBER following:user:1001 <span class="hljs-string">&quot;user:1002&quot;</span>  <span class="hljs-comment"># 1001 关注了 1002？</span><br>SISMEMBER following:user:1002 <span class="hljs-string">&quot;user:1001&quot;</span>  <span class="hljs-comment"># 1002 也关注了 1001？</span><br><span class="hljs-comment"># 两个都是 1 → 互粉</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="场景-7：Feed-流-时间线（朋友圈）"><a href="#场景-7：Feed-流-时间线（朋友圈）" class="headerlink" title="场景 7：Feed 流 &#x2F; 时间线（朋友圈）"></a>场景 7：Feed 流 &#x2F; 时间线（朋友圈）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 发布动态 =====</span><br><span class="hljs-comment"># 推模式：发布者把消息推送到所有粉丝的收件箱</span><br>LPUSH feed:user:1001 <span class="hljs-string">&#x27;&#123;&quot;id&quot;:8001,&quot;content&quot;:&quot;今天天气真好&quot;,&quot;time&quot;:1716400000&#125;&#x27;</span><br>LPUSH feed:user:1002 <span class="hljs-string">&#x27;&#123;&quot;id&quot;:8001,&quot;content&quot;:&quot;今天天气真好&quot;,&quot;time&quot;:1716400000&#125;&#x27;</span><br><span class="hljs-comment"># 把动态推送到每个粉丝的 feed 列表</span><br><br><span class="hljs-comment"># ===== 查看我的时间线（最新20条）=====</span><br>LRANGE feed:user:1001 0 19<br><br><span class="hljs-comment"># ===== 保持列表不会无限增长 =====</span><br>LTRIM feed:user:1001 0 999    <span class="hljs-comment"># 只保留最新1000条</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>拉模式（大 V 适用）</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 用 ZSet，score 用时间戳排序</span><br>ZADD outbox:bigV:2001 1716400000 <span class="hljs-string">&#x27;&#123;&quot;id&quot;:8001,&quot;content&quot;:&quot;直播预告&quot;&#125;&#x27;</span><br><br><span class="hljs-comment"># 粉丝刷新时，拉取关注的人的最新动态</span><br>ZREVRANGEBYSCORE outbox:bigV:2001 +inf 1716300000 LIMIT 0 20<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="场景-8：排行榜（详细版）"><a href="#场景-8：排行榜（详细版）" class="headerlink" title="场景 8：排行榜（详细版）"></a>场景 8：排行榜（详细版）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 游戏积分排行榜 =====</span><br>ZADD rank:game:daily 1500 <span class="hljs-string">&quot;player:A&quot;</span><br>ZADD rank:game:daily 2300 <span class="hljs-string">&quot;player:B&quot;</span><br>ZADD rank:game:daily 1800 <span class="hljs-string">&quot;player:C&quot;</span><br>ZADD rank:game:daily 3100 <span class="hljs-string">&quot;player:D&quot;</span><br><br><span class="hljs-comment"># 玩家获得积分</span><br>ZINCRBY rank:game:daily 200 <span class="hljs-string">&quot;player:A&quot;</span>    <span class="hljs-comment"># A 得 200 分</span><br><br><span class="hljs-comment"># Top 10</span><br>ZREVRANGE rank:game:daily 0 9 WITHSCORES<br><br><span class="hljs-comment"># 我的排名（从高到低）</span><br>ZREVRANK rank:game:daily <span class="hljs-string">&quot;player:A&quot;</span>       <span class="hljs-comment"># → 第几名（从0开始）</span><br><br><span class="hljs-comment"># 我的分数</span><br>ZSCORE rank:game:daily <span class="hljs-string">&quot;player:A&quot;</span><br><br><span class="hljs-comment"># 我附近的人（我的排名上下各 2 名）</span><br><span class="hljs-comment"># 假设我排名第 5</span><br>ZREVRANGE rank:game:daily 3 7 WITHSCORES  <span class="hljs-comment"># 第4~第8名</span><br><br><span class="hljs-comment"># ===== 每日排行榜自动过期 =====</span><br>EXPIRE rank:game:daily 86400    <span class="hljs-comment"># 24小时后自动清除</span><br><br><span class="hljs-comment"># ===== 周排行 = 合并7天的日排行 =====</span><br>ZUNIONSTORE rank:game:weekly 7 \\<br>  rank:game:day1 rank:game:day2 rank:game:day3 \\<br>  rank:game:day4 rank:game:day5 rank:game:day6 rank:game:day7<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="场景-9：限流（详细版）"><a href="#场景-9：限流（详细版）" class="headerlink" title="场景 9：限流（详细版）"></a>场景 9：限流（详细版）</h3><p><strong>方式一：固定窗口（简单）</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 每分钟限制 100 次</span><br>EVAL <span class="hljs-string">&quot;</span><br><span class="hljs-string">  local count = redis.call(&#x27;INCR&#x27;, KEYS[1])</span><br><span class="hljs-string">  if count == 1 then</span><br><span class="hljs-string">    redis.call(&#x27;EXPIRE&#x27;, KEYS[1], 60)</span><br><span class="hljs-string">  end</span><br><span class="hljs-string">  return count</span><br><span class="hljs-string">&quot;</span> 1 rate:user:1001:api<br><br><span class="hljs-comment"># count &gt; 100 → 拒绝</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>方式二：滑动窗口（更精确）</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 用 ZSet，member=请求ID，score=时间戳</span><br>EVAL <span class="hljs-string">&quot;</span><br><span class="hljs-string">  local key = KEYS[1]</span><br><span class="hljs-string">  local limit = tonumber(ARGV[1])</span><br><span class="hljs-string">  local window = tonumber(ARGV[2])</span><br><span class="hljs-string">  local now = tonumber(ARGV[3])</span><br><span class="hljs-string">  -- 清除窗口外的老请求</span><br><span class="hljs-string">  redis.call(&#x27;ZREMRANGEBYSCORE&#x27;, key, 0, now - window * 1000)</span><br><span class="hljs-string">  -- 当前窗口内请求数</span><br><span class="hljs-string">  local count = redis.call(&#x27;ZCARD&#x27;, key)</span><br><span class="hljs-string">  if count &lt; limit then</span><br><span class="hljs-string">    redis.call(&#x27;ZADD&#x27;, key, now, now .. &#x27;-&#x27; .. math.random(1000000))</span><br><span class="hljs-string">    redis.call(&#x27;PEXPIRE&#x27;, key, window * 1000)</span><br><span class="hljs-string">    return 1   -- 允许</span><br><span class="hljs-string">  else</span><br><span class="hljs-string">    return 0   -- 拒绝</span><br><span class="hljs-string">  end</span><br><span class="hljs-string">&quot;</span> 1 rate:user:1001 100 60 &lt;当前毫秒时间戳&gt;<br></code></pre></td></tr></table></figure>
+
+<p><strong>方式三：令牌桶（平滑限流）</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Lua 脚本实现</span><br>EVAL <span class="hljs-string">&quot;</span><br><span class="hljs-string">  local key = KEYS[1]</span><br><span class="hljs-string">  local rate = tonumber(ARGV[1])        -- 每秒产生几个令牌</span><br><span class="hljs-string">  local capacity = tonumber(ARGV[2])    -- 桶最大容量</span><br><span class="hljs-string">  local now = tonumber(ARGV[3])         -- 当前时间（秒）</span><br><span class="hljs-string"></span><br><span class="hljs-string">  local last_time = tonumber(redis.call(&#x27;HGET&#x27;, key, &#x27;last_time&#x27;) or now)</span><br><span class="hljs-string">  local tokens = tonumber(redis.call(&#x27;HGET&#x27;, key, &#x27;tokens&#x27;) or capacity)</span><br><span class="hljs-string"></span><br><span class="hljs-string">  -- 补充令牌</span><br><span class="hljs-string">  local elapsed = now - last_time</span><br><span class="hljs-string">  tokens = math.min(capacity, tokens + elapsed * rate)</span><br><span class="hljs-string"></span><br><span class="hljs-string">  if tokens &gt;= 1 then</span><br><span class="hljs-string">    tokens = tokens - 1</span><br><span class="hljs-string">    redis.call(&#x27;HSET&#x27;, key, &#x27;tokens&#x27;, tokens)</span><br><span class="hljs-string">    redis.call(&#x27;HSET&#x27;, key, &#x27;last_time&#x27;, now)</span><br><span class="hljs-string">    redis.call(&#x27;EXPIRE&#x27;, key, capacity / rate + 1)</span><br><span class="hljs-string">    return 1   -- 允许</span><br><span class="hljs-string">  else</span><br><span class="hljs-string">    redis.call(&#x27;HSET&#x27;, key, &#x27;last_time&#x27;, now)</span><br><span class="hljs-string">    return 0   -- 拒绝</span><br><span class="hljs-string">  end</span><br><span class="hljs-string">&quot;</span> 1 bucket:api:search 10 50 &lt;当前秒时间戳&gt;<br><span class="hljs-comment"># 每秒产生10个令牌，桶容量50</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="场景-10：延迟队列"><a href="#场景-10：延迟队列" class="headerlink" title="场景 10：延迟队列"></a>场景 10：延迟队列</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 添加延迟任务（score = 执行时间的 Unix 时间戳）=====</span><br>ZADD delay_queue 1716400000 <span class="hljs-string">&#x27;&#123;&quot;task&quot;:&quot;send_email&quot;,&quot;to&quot;:&quot;a@test.com&quot;&#125;&#x27;</span><br>ZADD delay_queue 1716400060 <span class="hljs-string">&#x27;&#123;&quot;task&quot;:&quot;cancel_order&quot;,&quot;orderId&quot;:&quot;ORD123&quot;&#125;&#x27;</span><br>ZADD delay_queue 1716400120 <span class="hljs-string">&#x27;&#123;&quot;task&quot;:&quot;push_notification&quot;,&quot;userId&quot;:1001&#125;&#x27;</span><br><br><span class="hljs-comment"># ===== 消费者：循环查询到期的任务 =====</span><br><span class="hljs-comment"># 取出当前时间之前应该执行的任务</span><br>ZRANGEBYSCORE delay_queue 0 &lt;当前时间戳&gt; LIMIT 0 1<br><br><span class="hljs-comment"># 取到任务后，原子地从队列中移除并执行</span><br><span class="hljs-comment"># 用 Lua 保证原子性（防止多个消费者重复取）</span><br>EVAL <span class="hljs-string">&quot;</span><br><span class="hljs-string">  local tasks = redis.call(&#x27;ZRANGEBYSCORE&#x27;, KEYS[1], &#x27;0&#x27;, ARGV[1], &#x27;LIMIT&#x27;, 0, 1)</span><br><span class="hljs-string">  if #tasks &gt; 0 then</span><br><span class="hljs-string">    redis.call(&#x27;ZREM&#x27;, KEYS[1], tasks[1])</span><br><span class="hljs-string">    return tasks[1]</span><br><span class="hljs-string">  else</span><br><span class="hljs-string">    return nil</span><br><span class="hljs-string">  end</span><br><span class="hljs-string">&quot;</span> 1 delay_queue &lt;当前时间戳&gt;<br></code></pre></td></tr></table></figure>
+
+<p><strong>典型用途</strong>：订单超时取消、延迟通知、定时重试</p>
+<hr>
+<h3 id="场景-11：库存扣减（秒杀-抢购）"><a href="#场景-11：库存扣减（秒杀-抢购）" class="headerlink" title="场景 11：库存扣减（秒杀&#x2F;抢购）"></a>场景 11：库存扣减（秒杀&#x2F;抢购）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 初始化库存 =====</span><br>SET stock:product:3001 100    <span class="hljs-comment"># 100件库存</span><br><br><span class="hljs-comment"># ===== 扣减库存（Lua 保证原子性）=====</span><br>EVAL <span class="hljs-string">&quot;</span><br><span class="hljs-string">  local stock = tonumber(redis.call(&#x27;GET&#x27;, KEYS[1]))</span><br><span class="hljs-string">  if stock and stock &gt; 0 then</span><br><span class="hljs-string">    redis.call(&#x27;DECR&#x27;, KEYS[1])</span><br><span class="hljs-string">    return 1    -- 扣减成功</span><br><span class="hljs-string">  else</span><br><span class="hljs-string">    return 0    -- 库存不足</span><br><span class="hljs-string">  end</span><br><span class="hljs-string">&quot;</span> 1 stock:product:3001<br><br><span class="hljs-comment"># ===== 高并发秒杀（更安全的方式）=====</span><br><span class="hljs-comment"># 扣减指定数量</span><br>EVAL <span class="hljs-string">&quot;</span><br><span class="hljs-string">  local stock = tonumber(redis.call(&#x27;GET&#x27;, KEYS[1]))</span><br><span class="hljs-string">  local need = tonumber(ARGV[1])</span><br><span class="hljs-string">  if stock and stock &gt;= need then</span><br><span class="hljs-string">    redis.call(&#x27;DECRBY&#x27;, KEYS[1], need)</span><br><span class="hljs-string">    return stock - need    -- 返回剩余库存</span><br><span class="hljs-string">  else</span><br><span class="hljs-string">    return -1              -- 库存不足</span><br><span class="hljs-string">  end</span><br><span class="hljs-string">&quot;</span> 1 stock:product:3001 1<br></code></pre></td></tr></table></figure>
+
+<p><strong>为什么必须用 Lua？</strong> 因为 <code>GET</code> 判断库存 + <code>DECR</code> 扣减必须是原子操作，否则高并发下会超卖。</p>
+<hr>
+<h3 id="场景-12：全局唯一-ID-生成器"><a href="#场景-12：全局唯一-ID-生成器" class="headerlink" title="场景 12：全局唯一 ID 生成器"></a>场景 12：全局唯一 ID 生成器</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 简单方案：INCR 自增 =====</span><br>INCR global:<span class="hljs-built_in">id</span>:order      <span class="hljs-comment"># → 1</span><br>INCR global:<span class="hljs-built_in">id</span>:order      <span class="hljs-comment"># → 2</span><br>INCR global:<span class="hljs-built_in">id</span>:order      <span class="hljs-comment"># → 3</span><br><span class="hljs-comment"># 每次调用返回唯一递增 ID</span><br><br><span class="hljs-comment"># ===== 带日期前缀的 ID =====</span><br><span class="hljs-comment"># 每天一个 key，INCR 生成当天序号</span><br>INCR order:<span class="hljs-built_in">id</span>:20260522    <span class="hljs-comment"># → 1</span><br><span class="hljs-comment"># 组合成：20260522000001</span><br><br><span class="hljs-comment"># ===== 批量获取 ID（减少网络请求）=====</span><br>INCRBY global:<span class="hljs-built_in">id</span>:order 100    <span class="hljs-comment"># 一次取 100 个 ID</span><br><span class="hljs-comment"># 返回 300，表示你拿到了 201~300 这批 ID</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>优点</strong>：天然原子、高性能、趋势递增。</p>
+<p><strong>缺点</strong>：单点 Redis 挂了就不能生成。生产中常和 Snowflake 结合使用。</p>
+<hr>
+<h3 id="场景-13：抽奖系统"><a href="#场景-13：抽奖系统" class="headerlink" title="场景 13：抽奖系统"></a>场景 13：抽奖系统</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 添加参与抽奖的用户 =====</span><br>SADD lottery:act001 <span class="hljs-string">&quot;user:1001&quot;</span> <span class="hljs-string">&quot;user:1002&quot;</span> <span class="hljs-string">&quot;user:1003&quot;</span> <span class="hljs-string">&quot;user:1004&quot;</span> <span class="hljs-string">&quot;user:1005&quot;</span><br><br><span class="hljs-comment"># ===== 参与人数 =====</span><br>SCARD lottery:act001    <span class="hljs-comment"># → 5</span><br><br><span class="hljs-comment"># ===== 抽 1 个一等奖（抽出后不能再中奖）=====</span><br>SPOP lottery:act001     <span class="hljs-comment"># → 随机弹出一个（从集合中移除）</span><br><span class="hljs-comment"># 比如弹出 &quot;user:1003&quot;</span><br><br><span class="hljs-comment"># ===== 抽 2 个二等奖 =====</span><br>SPOP lottery:act001 2   <span class="hljs-comment"># → 随机弹出 2 个</span><br><br><span class="hljs-comment"># ===== 如果允许一人多次中奖 =====</span><br>SRANDMEMBER lottery:act001 3   <span class="hljs-comment"># 随机取 3 个（不删除）</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="场景-14：实时聊天-消息通知"><a href="#场景-14：实时聊天-消息通知" class="headerlink" title="场景 14：实时聊天 &#x2F; 消息通知"></a>场景 14：实时聊天 &#x2F; 消息通知</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 用 Pub/Sub 做实时聊天 =====</span><br><span class="hljs-comment"># 用户 A 订阅私聊频道</span><br>SUBSCRIBE chat:room:1001_1002<br><br><span class="hljs-comment"># 用户 B 发消息</span><br>PUBLISH chat:room:1001_1002 <span class="hljs-string">&#x27;&#123;&quot;from&quot;:&quot;user:1002&quot;,&quot;msg&quot;:&quot;你好！&quot;,&quot;time&quot;:1716400000&#125;&#x27;</span><br><br><span class="hljs-comment"># ===== 用 List 存离线消息 =====</span><br>LPUSH inbox:user:1001 <span class="hljs-string">&#x27;&#123;&quot;from&quot;:&quot;user:1002&quot;,&quot;msg&quot;:&quot;在吗？&quot;,&quot;time&quot;:1716400000&#125;&#x27;</span><br>LPUSH inbox:user:1001 <span class="hljs-string">&#x27;&#123;&quot;from&quot;:&quot;user:1003&quot;,&quot;msg&quot;:&quot;明天开会&quot;,&quot;time&quot;:1716400100&#125;&#x27;</span><br><br><span class="hljs-comment"># 用户上线后，拉取所有未读消息</span><br>LRANGE inbox:user:1001 0 -1<br><br><span class="hljs-comment"># 已读后清空</span><br>DEL inbox:user:1001<br><br><span class="hljs-comment"># ===== 未读消息计数 =====</span><br>INCR unread:user:1001     <span class="hljs-comment"># 收到一条新消息，计数+1</span><br>GET unread:user:1001      <span class="hljs-comment"># 查看未读数 → 显示小红点</span><br>SET unread:user:1001 0    <span class="hljs-comment"># 点击后清零</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="场景-15：布隆过滤器（Bloom-Filter）"><a href="#场景-15：布隆过滤器（Bloom-Filter）" class="headerlink" title="场景 15：布隆过滤器（Bloom Filter）"></a>场景 15：布隆过滤器（Bloom Filter）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Redis 通过 RedisBloom 模块支持</span><br><span class="hljs-comment"># ===== 创建布隆过滤器 =====</span><br>BF.RESERVE userfilter 0.001 1000000<br><span class="hljs-comment"># 错误率 0.1%，预期元素 100 万</span><br><br><span class="hljs-comment"># ===== 添加元素 =====</span><br>BF.ADD userfilter <span class="hljs-string">&quot;user:1001&quot;</span><br>BF.ADD userfilter <span class="hljs-string">&quot;user:1002&quot;</span><br><br><span class="hljs-comment"># ===== 查询元素是否存在 =====</span><br>BF.EXISTS userfilter <span class="hljs-string">&quot;user:1001&quot;</span>    <span class="hljs-comment"># → 1（可能存在）</span><br>BF.EXISTS userfilter <span class="hljs-string">&quot;user:9999&quot;</span>    <span class="hljs-comment"># → 0（一定不存在）</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>核心特性</strong>：</p>
+<ul>
+<li>说”不在”就一定不在 ✅</li>
+<li>说”在”有可能误判 ⚠️（概率很小）</li>
+<li>不能删除元素</li>
+</ul>
+<p><strong>用途</strong>：防缓存穿透、垃圾邮件过滤、已读文章去重推荐</p>
+<hr>
+<h3 id="场景-16：配置中心"><a href="#场景-16：配置中心" class="headerlink" title="场景 16：配置中心"></a>场景 16：配置中心</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 用 Hash 存储应用配置 =====</span><br>HSET config:app:web \\<br>  db_host <span class="hljs-string">&quot;192.168.1.100&quot;</span> \\<br>  db_port <span class="hljs-string">&quot;5432&quot;</span> \\<br>  cache_ttl <span class="hljs-string">&quot;3600&quot;</span> \\<br>  max_connections <span class="hljs-string">&quot;100&quot;</span> \\<br>  feature_new_ui <span class="hljs-string">&quot;true&quot;</span> \\<br>  maintenance_mode <span class="hljs-string">&quot;false&quot;</span><br><br><span class="hljs-comment"># 读取单个配置</span><br>HGET config:app:web feature_new_ui    <span class="hljs-comment"># → &quot;true&quot;</span><br><br><span class="hljs-comment"># 读取全部配置</span><br>HGETALL config:app:web<br><br><span class="hljs-comment"># 动态修改配置（不用重启应用！）</span><br>HSET config:app:web maintenance_mode <span class="hljs-string">&quot;true&quot;</span><br><br><span class="hljs-comment"># 配合 Pub/Sub 实现配置实时推送</span><br>PUBLISH config:changed <span class="hljs-string">&#x27;&#123;&quot;key&quot;:&quot;maintenance_mode&quot;,&quot;value&quot;:&quot;true&quot;&#125;&#x27;</span><br><span class="hljs-comment"># 所有应用实例订阅 config:changed 频道，收到后自动更新本地配置</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="场景-17：短链接-URL-映射"><a href="#场景-17：短链接-URL-映射" class="headerlink" title="场景 17：短链接 &#x2F; URL 映射"></a>场景 17：短链接 &#x2F; URL 映射</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 长链接 → 短码映射 =====</span><br><span class="hljs-comment"># 生成短码</span><br>INCR short_url:counter    <span class="hljs-comment"># → 1（转成 base62: &quot;1&quot;）</span><br><span class="hljs-comment"># 实际用 base62 编码生成类似 &quot;aB3xK&quot; 的短码</span><br><br><span class="hljs-comment"># 存储映射</span><br>SET url:aB3xK <span class="hljs-string">&quot;&lt;https://www.example.com/very/long/path?param=value&gt;&quot;</span> EX 2592000<br><span class="hljs-comment"># 30天过期</span><br><br><span class="hljs-comment"># 访问短链接时查询</span><br>GET url:aB3xK    <span class="hljs-comment"># → 返回长链接，302 重定向</span><br><br><span class="hljs-comment"># 点击统计</span><br>INCR clicks:aB3xK    <span class="hljs-comment"># 每次访问 +1</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="场景-18：搜索历史-最近浏览"><a href="#场景-18：搜索历史-最近浏览" class="headerlink" title="场景 18：搜索历史 &#x2F; 最近浏览"></a>场景 18：搜索历史 &#x2F; 最近浏览</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 用 ZSet 存，score 用时间戳 =====</span><br><span class="hljs-comment"># 用户搜索了一个关键词</span><br>ZADD search:<span class="hljs-built_in">history</span>:user:1001 1716400000 <span class="hljs-string">&quot;Redis教程&quot;</span><br>ZADD search:<span class="hljs-built_in">history</span>:user:1001 1716400100 <span class="hljs-string">&quot;Python入门&quot;</span><br>ZADD search:<span class="hljs-built_in">history</span>:user:1001 1716400200 <span class="hljs-string">&quot;分布式锁&quot;</span><br><br><span class="hljs-comment"># 如果同一个词再搜，只更新时间（ZSet 自动去重）</span><br>ZADD search:<span class="hljs-built_in">history</span>:user:1001 1716400300 <span class="hljs-string">&quot;Redis教程&quot;</span><br><br><span class="hljs-comment"># 获取最近 10 条搜索历史（按时间倒序）</span><br>ZREVRANGE search:<span class="hljs-built_in">history</span>:user:1001 0 9<br><br><span class="hljs-comment"># 只保留最近 50 条</span><br>ZREMRANGEBYRANK search:<span class="hljs-built_in">history</span>:user:1001 0 -51<br><br><span class="hljs-comment"># 清空搜索历史</span><br>DEL search:<span class="hljs-built_in">history</span>:user:1001<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="场景-19：验证码-短信发送限制"><a href="#场景-19：验证码-短信发送限制" class="headerlink" title="场景 19：验证码 &#x2F; 短信发送限制"></a>场景 19：验证码 &#x2F; 短信发送限制</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 发送验证码 =====</span><br><span class="hljs-comment"># 1. 检查是否频繁发送（60秒内只能发一次）</span><br>EXISTS sms:<span class="hljs-built_in">limit</span>:13800138000<br><span class="hljs-comment"># 返回 1 → 提示&quot;请60秒后再试&quot;</span><br><br><span class="hljs-comment"># 2. 没有限制，发送验证码</span><br>SET sms:code:13800138000 <span class="hljs-string">&quot;582931&quot;</span> EX 300     <span class="hljs-comment"># 验证码5分钟过期</span><br>SET sms:<span class="hljs-built_in">limit</span>:13800138000 1 EX 60            <span class="hljs-comment"># 60秒内不能再发</span><br><br><span class="hljs-comment"># 3. 每天限制5次</span><br>INCR sms:daily:13800138000<br>EXPIRE sms:daily:13800138000 86400           <span class="hljs-comment"># 24小时过期</span><br><span class="hljs-comment"># 如果 count &gt; 5 → 拒绝发送</span><br><br><span class="hljs-comment"># ===== 验证 =====</span><br>GET sms:code:13800138000    <span class="hljs-comment"># → &quot;582931&quot;</span><br><span class="hljs-comment"># 用户输入 582931 → 匹配成功 → 验证通过</span><br>DEL sms:code:13800138000    <span class="hljs-comment"># 验证后删除，防止重复使用</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="场景-20：排他性登录（踢掉旧设备）"><a href="#场景-20：排他性登录（踢掉旧设备）" class="headerlink" title="场景 20：排他性登录（踢掉旧设备）"></a>场景 20：排他性登录（踢掉旧设备）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 用户登录，生成新 token</span><br>SET user:token:1001 <span class="hljs-string">&quot;new-token-xyz&quot;</span> EX 86400<br><span class="hljs-comment"># 每次登录覆盖旧 token</span><br><br><span class="hljs-comment"># 旧设备请求时</span><br>GET user:token:1001    <span class="hljs-comment"># → &quot;new-token-xyz&quot;</span><br><span class="hljs-comment"># 旧设备拿的是 &quot;old-token-abc&quot;，不匹配 → 强制下线</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="场景总结速查表"><a href="#场景总结速查表" class="headerlink" title="场景总结速查表"></a>场景总结速查表</h3><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>数据结构</th>
+<th>核心命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>缓存</strong></td>
+<td>String &#x2F; Hash</td>
+<td><code>SET EX</code> &#x2F; <code>HSET</code></td>
+</tr>
+<tr>
+<td><strong>分布式锁</strong></td>
+<td>String</td>
+<td><code>SET NX EX</code> + Lua 释放</td>
+</tr>
+<tr>
+<td><strong>Session 管理</strong></td>
+<td>String</td>
+<td><code>SET EX</code> &#x2F; <code>GET</code> &#x2F; <code>EXPIRE</code></td>
+</tr>
+<tr>
+<td><strong>计数器</strong></td>
+<td>String</td>
+<td><code>INCR</code> &#x2F; <code>INCRBY</code></td>
+</tr>
+<tr>
+<td><strong>全局 ID 生成</strong></td>
+<td>String</td>
+<td><code>INCR</code> &#x2F; <code>INCRBY</code></td>
+</tr>
+<tr>
+<td><strong>购物车</strong></td>
+<td>Hash</td>
+<td><code>HSET</code> &#x2F; <code>HINCRBY</code> &#x2F; <code>HDEL</code> &#x2F; <code>HGETALL</code></td>
+</tr>
+<tr>
+<td><strong>对象存储</strong></td>
+<td>Hash</td>
+<td><code>HSET</code> &#x2F; <code>HGET</code> &#x2F; <code>HGETALL</code></td>
+</tr>
+<tr>
+<td><strong>配置中心</strong></td>
+<td>Hash + Pub&#x2F;Sub</td>
+<td><code>HSET</code> &#x2F; <code>HGETALL</code> &#x2F; <code>PUBLISH</code></td>
+</tr>
+<tr>
+<td><strong>消息队列（简单）</strong></td>
+<td>List</td>
+<td><code>RPUSH</code> &#x2F; <code>BLPOP</code></td>
+</tr>
+<tr>
+<td><strong>最新消息列表</strong></td>
+<td>List</td>
+<td><code>LPUSH</code> &#x2F; <code>LRANGE</code> &#x2F; <code>LTRIM</code></td>
+</tr>
+<tr>
+<td><strong>Feed 流</strong></td>
+<td>List &#x2F; ZSet</td>
+<td><code>LPUSH</code> &#x2F; <code>ZREVRANGE</code></td>
+</tr>
+<tr>
+<td><strong>点赞 &#x2F; 收藏</strong></td>
+<td>Set</td>
+<td><code>SADD</code> &#x2F; <code>SREM</code> &#x2F; <code>SISMEMBER</code> &#x2F; <code>SCARD</code></td>
+</tr>
+<tr>
+<td><strong>关注 &#x2F; 粉丝</strong></td>
+<td>Set</td>
+<td><code>SADD</code> &#x2F; <code>SREM</code> &#x2F; <code>SINTER</code></td>
+</tr>
+<tr>
+<td><strong>标签系统</strong></td>
+<td>Set</td>
+<td><code>SADD</code> &#x2F; <code>SINTER</code> &#x2F; <code>SUNION</code></td>
+</tr>
+<tr>
+<td><strong>共同好友</strong></td>
+<td>Set</td>
+<td><code>SINTER</code></td>
+</tr>
+<tr>
+<td><strong>抽奖</strong></td>
+<td>Set</td>
+<td><code>SPOP</code> &#x2F; <code>SRANDMEMBER</code></td>
+</tr>
+<tr>
+<td><strong>排行榜</strong></td>
+<td>ZSet</td>
+<td><code>ZADD</code> &#x2F; <code>ZINCRBY</code> &#x2F; <code>ZREVRANGE</code></td>
+</tr>
+<tr>
+<td><strong>延迟队列</strong></td>
+<td>ZSet</td>
+<td><code>ZADD</code>（score&#x3D;时间戳）&#x2F; <code>ZRANGEBYSCORE</code></td>
+</tr>
+<tr>
+<td><strong>搜索历史</strong></td>
+<td>ZSet</td>
+<td><code>ZADD</code> &#x2F; <code>ZREVRANGE</code></td>
+</tr>
+<tr>
+<td><strong>限流</strong></td>
+<td>String &#x2F; ZSet</td>
+<td><code>INCR EX</code> &#x2F; Lua 滑动窗口</td>
+</tr>
+<tr>
+<td><strong>消息队列（可靠）</strong></td>
+<td>Stream</td>
+<td><code>XADD</code> &#x2F; <code>XREADGROUP</code> &#x2F; <code>XACK</code></td>
+</tr>
+<tr>
+<td><strong>签到统计</strong></td>
+<td>Bitmap</td>
+<td><code>SETBIT</code> &#x2F; <code>GETBIT</code> &#x2F; <code>BITCOUNT</code></td>
+</tr>
+<tr>
+<td><strong>活跃用户</strong></td>
+<td>Bitmap</td>
+<td><code>SETBIT</code> &#x2F; <code>BITOP AND</code> &#x2F; <code>BITCOUNT</code></td>
+</tr>
+<tr>
+<td><strong>UV 统计</strong></td>
+<td>HyperLogLog</td>
+<td><code>PFADD</code> &#x2F; <code>PFCOUNT</code></td>
+</tr>
+<tr>
+<td><strong>附近的人&#x2F;店</strong></td>
+<td>Geo</td>
+<td><code>GEOADD</code> &#x2F; <code>GEOSEARCH</code> &#x2F; <code>GEODIST</code></td>
+</tr>
+<tr>
+<td><strong>实时通知</strong></td>
+<td>Pub&#x2F;Sub</td>
+<td><code>SUBSCRIBE</code> &#x2F; <code>PUBLISH</code></td>
+</tr>
+<tr>
+<td><strong>布隆过滤器</strong></td>
+<td>Bloom Filter</td>
+<td><code>BF.ADD</code> &#x2F; <code>BF.EXISTS</code></td>
+</tr>
+<tr>
+<td><strong>验证码</strong></td>
+<td>String</td>
+<td><code>SET EX</code> &#x2F; <code>GET</code> &#x2F; <code>DEL</code></td>
+</tr>
+<tr>
+<td><strong>库存扣减</strong></td>
+<td>String + Lua</td>
+<td><code>GET</code> + <code>DECR</code> 原子操作</td>
+</tr>
+<tr>
+<td><strong>短链接</strong></td>
+<td>String</td>
+<td><code>SET EX</code> &#x2F; <code>GET</code> &#x2F; <code>INCR</code></td>
+</tr>
+<tr>
+<td><strong>排他性登录</strong></td>
+<td>String</td>
+<td><code>SET</code> 覆盖旧 token</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="十五、安全配置"><a href="#十五、安全配置" class="headerlink" title="十五、安全配置"></a>十五、安全配置</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ===== 设置密码 =====</span><br><span class="hljs-comment"># redis.conf</span><br>requirepass YourStrongPassword123!<br><br><span class="hljs-comment"># 连接时认证</span><br>AUTH YourStrongPassword123!<br><br><span class="hljs-comment"># ===== ACL 权限控制（Redis 6.0+）=====</span><br><span class="hljs-comment"># 创建只读用户</span><br>ACL SETUSER <span class="hljs-built_in">readonly</span> on &gt;password ~* +@<span class="hljs-built_in">read</span><br><span class="hljs-comment"># on=启用 &gt;password=密码 ~*=可访问所有key +@read=只能执行读命令</span><br><br><span class="hljs-comment"># 创建只能操作特定 key 的用户</span><br>ACL SETUSER appuser on &gt;pass123 ~app:* +@all<br><span class="hljs-comment"># 只能操作 app: 开头的 key</span><br><br><span class="hljs-comment"># 查看用户</span><br>ACL LIST<br><br><span class="hljs-comment"># ===== 网络安全 =====</span><br><span class="hljs-comment"># redis.conf</span><br><span class="hljs-built_in">bind</span> 127.0.0.1          <span class="hljs-comment"># 只监听本机（禁止外网直连）</span><br>protected-mode <span class="hljs-built_in">yes</span>       <span class="hljs-comment"># 保护模式</span><br><span class="hljs-comment"># rename-command FLUSHALL &quot;&quot;   # 禁用危险命令</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="十六、性能优化速查表"><a href="#十六、性能优化速查表" class="headerlink" title="十六、性能优化速查表"></a>十六、性能优化速查表</h2><table>
+<thead>
+<tr>
+<th>做法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>✅ 用 <code>Pipeline</code></td>
+<td>批量命令减少网络往返</td>
+</tr>
+<tr>
+<td>✅ 用 <code>SCAN</code></td>
+<td>代替 <code>KEYS *</code>（不阻塞）</td>
+</tr>
+<tr>
+<td>✅ 用 <code>UNLINK</code></td>
+<td>代替 <code>DEL</code>（异步删除大 key）</td>
+</tr>
+<tr>
+<td>✅ 合理设 <code>maxmemory</code></td>
+<td>加淘汰策略，防止内存撑爆</td>
+</tr>
+<tr>
+<td>✅ 设置过期时间</td>
+<td>避免无用 key 永久占内存</td>
+</tr>
+<tr>
+<td>❌ 避免大 key</td>
+<td>String value &gt; 10KB，集合元素 &gt; 10000</td>
+</tr>
+<tr>
+<td>❌ 避免热 key</td>
+<td>单个 key QPS 太高会成瓶颈</td>
+</tr>
+<tr>
+<td>❌ 避免 <code>O(N)</code> 命令</td>
+<td><code>HGETALL</code>、<code>SMEMBERS</code> 元素多时很慢</td>
+</tr>
+</tbody></table>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 监控慢查询</span><br>SLOWLOG GET 10         <span class="hljs-comment"># 查看最近10条慢查询</span><br>SLOWLOG LEN            <span class="hljs-comment"># 慢查询总数</span><br><br><span class="hljs-comment"># 查看内存使用</span><br>INFO memory<br>MEMORY USAGE mykey     <span class="hljs-comment"># 查看某个 key 占多少内存</span><br><br><span class="hljs-comment"># 实时监控命令</span><br>MONITOR                <span class="hljs-comment"># ⚠️ 生产慎用，会打印所有命令</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="十七、Redis-配置速查"><a href="#十七、Redis-配置速查" class="headerlink" title="十七、Redis 配置速查"></a>十七、Redis 配置速查</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看所有配置</span><br>CONFIG GET *<br><br><span class="hljs-comment"># 常用配置</span><br>CONFIG SET maxmemory 2gb                 <span class="hljs-comment"># 最大内存</span><br>CONFIG SET maxmemory-policy allkeys-lru  <span class="hljs-comment"># 淘汰策略</span><br>CONFIG SET <span class="hljs-built_in">timeout</span> 300                   <span class="hljs-comment"># 客户端空闲超时（秒）</span><br><br><span class="hljs-comment"># 动态修改后持久化到配置文件</span><br>CONFIG REWRITE<br></code></pre></td></tr></table></figure>
+
+<hr>
+<p>以上就是 Redis 从入门到实战的完整知识点。建议学习顺序：<strong>String → Hash → List → Set → ZSet → 持久化 → 主从&#x2F;哨兵&#x2F;集群 → 实战场景</strong>。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/szk.github.io/categories/ai/" class="category-chain-item">ai</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/szk.github.io/tags/AI/" class="print-no-link">#AI</a>
+      
+        <a href="/szk.github.io/tags/Redis/" class="print-no-link">#Redis</a>
+      
+        <a href="/szk.github.io/tags/%E7%BC%93%E5%AD%98/" class="print-no-link">#缓存</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Redis 入门笔记</div>
+      <div>https://jackbrownm.github.io/szk.github.io/2026/08/02/2026-08-02-redis/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>jackBrownM</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>August 2, 2026</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/szk.github.io/2026/08/02/2026-08-02-langgraph/" title="LangGraph 入门笔记">
+                        <span class="hidden-mobile">LangGraph 入门笔记</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+      <span>szk blog</span>
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/szk.github.io/js/events.js" ></script>
+<script  src="/szk.github.io/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/szk.github.io/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/szk.github.io/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/szk.github.io/js/color-toggle.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/szk.github.io/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
