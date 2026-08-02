@@ -1,0 +1,1420 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/szk.github.io/img/fluid.png">
+  <link rel="icon" href="/szk.github.io/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="jackBrownM">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、PostgreSQL 是什么一句话：开源最强的关系型数据库，比 MySQL 功能更丰富，支持复杂查询、JSON、全文搜索、地理信息等。 核心特点：  完全支持 SQL 标准 支持事务（ACID） 每个连接 &#x3D; 一个进程（MySQL 是线程） 可以自定义数据类型、函数、索引方法 免费，社区活跃   二、安装后的第一件事三个配置文件要知道：    文件 作用 一句话解释    postg">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PostgreSQL 是什么">
+<meta property="og:url" content="https://jackbrownm.github.io/szk.github.io/2026/08/02/2026-08-02-postgresql/index.html">
+<meta property="og:site_name" content="szk&#39;s blog">
+<meta property="og:description" content="一、PostgreSQL 是什么一句话：开源最强的关系型数据库，比 MySQL 功能更丰富，支持复杂查询、JSON、全文搜索、地理信息等。 核心特点：  完全支持 SQL 标准 支持事务（ACID） 每个连接 &#x3D; 一个进程（MySQL 是线程） 可以自定义数据类型、函数、索引方法 免费，社区活跃   二、安装后的第一件事三个配置文件要知道：    文件 作用 一句话解释    postg">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-08-02T04:30:00.000Z">
+<meta property="article:modified_time" content="2026-08-02T04:53:22.118Z">
+<meta property="article:author" content="jackBrownM">
+<meta property="article:tag" content="PostgreSQL">
+<meta property="article:tag" content="数据库">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>PostgreSQL 是什么 - szk&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/szk.github.io/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/szk.github.io/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/szk.github.io/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"jackbrownm.github.io","root":"/szk.github.io/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/szk.github.io/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/szk.github.io/js/utils.js" ></script>
+  <script  src="/szk.github.io/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/szk.github.io/">
+      <strong>szk&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/szk.github.io/" target="_self">
+                
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/szk.github.io/categories/" target="_self">
+                
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/szk.github.io/archives/" target="_self">
+                
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/szk.github.io/tags/" target="_self">
+                
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/szk.github.io/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>Home</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/szk.github.io/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>Categories</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/szk.github.io/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>Archives</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/szk.github.io/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>Tags</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>Search</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="Light"
+               data-label-dark="Dark">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">Dark</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/szk.github.io/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="PostgreSQL 是什么"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-08-02 12:30" pubdate>
+          August 2, 2026 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          11k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          90 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">PostgreSQL 是什么</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="一、PostgreSQL-是什么"><a href="#一、PostgreSQL-是什么" class="headerlink" title="一、PostgreSQL 是什么"></a>一、PostgreSQL 是什么</h2><p>一句话：<strong>开源最强的关系型数据库</strong>，比 MySQL 功能更丰富，支持复杂查询、JSON、全文搜索、地理信息等。</p>
+<p><strong>核心特点</strong>：</p>
+<ul>
+<li>完全支持 SQL 标准</li>
+<li>支持事务（ACID）</li>
+<li>每个连接 &#x3D; 一个进程（MySQL 是线程）</li>
+<li>可以自定义数据类型、函数、索引方法</li>
+<li>免费，社区活跃</li>
+</ul>
+<hr>
+<h2 id="二、安装后的第一件事"><a href="#二、安装后的第一件事" class="headerlink" title="二、安装后的第一件事"></a>二、安装后的第一件事</h2><p><strong>三个配置文件</strong>要知道：</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>作用</th>
+<th>一句话解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>postgresql.conf</td>
+<td>数据库主配置</td>
+<td>内存、性能、日志都在这</td>
+</tr>
+<tr>
+<td>pg_hba.conf</td>
+<td>谁能连进来</td>
+<td>控制 IP、用户、认证方式</td>
+</tr>
+<tr>
+<td>pg_ident.conf</td>
+<td>系统用户映射</td>
+<td>很少改</td>
+</tr>
+</tbody></table>
+<p><strong>常用命令</strong>：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql">psql <span class="hljs-operator">-</span>U postgres <span class="hljs-operator">-</span>d mydb    <span class="hljs-comment">-- 连接数据库</span><br>\\l                           <span class="hljs-comment">-- 列出所有数据库</span><br>\\dt                          <span class="hljs-comment">-- 列出当前库所有表</span><br>\\d users                     <span class="hljs-comment">-- 查看表结构</span><br>\\q                           <span class="hljs-comment">-- 退出</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、数据库层级结构"><a href="#三、数据库层级结构" class="headerlink" title="三、数据库层级结构"></a>三、数据库层级结构</h2><figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ada">实例（一个PG服务）<br>  └── 数据库（database）    <span class="hljs-comment">-- 互相隔离，不能跨库查询</span><br>       └── 模式（schema）   <span class="hljs-comment">-- 像文件夹，默认是 public</span><br>            └── 表、视图、函数...<br></code></pre></td></tr></table></figure>
+
+<p>简单理解：一个 PG 服务可以装多个数据库，每个数据库里有多个 schema，schema 里放表。</p>
+<hr>
+<h2 id="四、数据类型"><a href="#四、数据类型" class="headerlink" title="四、数据类型"></a>四、数据类型</h2><h3 id="数字"><a href="#数字" class="headerlink" title="数字"></a>数字</h3><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>用途</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>integer</td>
+<td>一般整数</td>
+<td>年龄、数量</td>
+</tr>
+<tr>
+<td>bigint</td>
+<td>大整数</td>
+<td>ID、订单号</td>
+</tr>
+<tr>
+<td>numeric(10,2)</td>
+<td>精确小数</td>
+<td>金额（<strong>钱必须用这个</strong>）</td>
+</tr>
+<tr>
+<td>real &#x2F; double</td>
+<td>近似小数</td>
+<td>科学计算</td>
+</tr>
+<tr>
+<td>serial</td>
+<td>自增ID</td>
+<td>主键</td>
+</tr>
+</tbody></table>
+<h3 id="文字"><a href="#文字" class="headerlink" title="文字"></a>文字</h3><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>区别</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>varchar(n)</td>
+<td>限制最大长度</td>
+</tr>
+<tr>
+<td>text</td>
+<td>不限长度，<strong>推荐用这个</strong></td>
+</tr>
+<tr>
+<td>char(n)</td>
+<td>固定长度，右边补空格，基本不用</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>PG 中 text 和 varchar 性能一样，text 更省心。</p>
+</blockquote>
+<h3 id="时间"><a href="#时间" class="headerlink" title="时间"></a>时间</h3><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>date</td>
+<td>只有日期：2024-06-15</td>
+</tr>
+<tr>
+<td>time</td>
+<td>只有时间：14:30:00</td>
+</tr>
+<tr>
+<td>timestamp</td>
+<td>日期+时间（不带时区）</td>
+</tr>
+<tr>
+<td>timestamptz</td>
+<td>日期+时间+时区，<strong>推荐用这个</strong></td>
+</tr>
+<tr>
+<td>interval</td>
+<td>时间段：’3 days’、’2 hours’</td>
+</tr>
+</tbody></table>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> now();                        <span class="hljs-comment">-- 当前时间</span><br><span class="hljs-keyword">SELECT</span> now() <span class="hljs-operator">-</span> <span class="hljs-type">interval</span> <span class="hljs-string">&#x27;7 days&#x27;</span>;    <span class="hljs-comment">-- 7天前</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="布尔"><a href="#布尔" class="headerlink" title="布尔"></a>布尔</h3><p><code>boolean</code>：true &#x2F; false &#x2F; null，就这三个值。</p>
+<h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><p>PG 原生支持数组，MySQL 不支持：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE TABLE</span> t (tags text[]);<br><span class="hljs-keyword">INSERT INTO</span> t <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;&#123;python, sql, redis&#125;&#x27;</span>);<br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> t <span class="hljs-keyword">WHERE</span> <span class="hljs-string">&#x27;python&#x27;</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">ANY</span>(tags);  <span class="hljs-comment">-- 包含python的</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="JSON"><a href="#JSON" class="headerlink" title="JSON"></a>JSON</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE TABLE</span> t (data jsonb);   <span class="hljs-comment">-- 用 jsonb，别用 json</span><br><span class="hljs-keyword">INSERT INTO</span> t <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;&#123;&quot;name&quot;: &quot;张三&quot;, &quot;age&quot;: 25&#125;&#x27;</span>);<br><span class="hljs-keyword">SELECT</span> data<span class="hljs-operator">-</span><span class="hljs-operator">&gt;&gt;</span><span class="hljs-string">&#x27;name&#x27;</span> <span class="hljs-keyword">FROM</span> t;  <span class="hljs-comment">-- 取值：张三</span><br></code></pre></td></tr></table></figure>
+
+<p>jsonb 比 json 快，能建索引。</p>
+<h3 id="UUID"><a href="#UUID" class="headerlink" title="UUID"></a>UUID</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> gen_random_uuid();  <span class="hljs-comment">-- 生成随机UUID，PG13+内置</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> TYPE status <span class="hljs-keyword">AS</span> ENUM (<span class="hljs-string">&#x27;active&#x27;</span>, <span class="hljs-string">&#x27;inactive&#x27;</span>, <span class="hljs-string">&#x27;banned&#x27;</span>);<br></code></pre></td></tr></table></figure>
+
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ul>
+<li><code>inet</code>：IP 地址</li>
+<li><code>bytea</code>：二进制数据</li>
+<li><code>daterange/int4range</code>：范围类型（表示一个区间）</li>
+</ul>
+<hr>
+<h2 id="五、建表和约束"><a href="#五、建表和约束" class="headerlink" title="五、建表和约束"></a>五、建表和约束</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE TABLE</span> users (<br>    id         bigserial <span class="hljs-keyword">PRIMARY KEY</span>,           <span class="hljs-comment">-- 自增主键</span><br>    username   <span class="hljs-type">varchar</span>(<span class="hljs-number">50</span>) <span class="hljs-keyword">NOT NULL</span> <span class="hljs-keyword">UNIQUE</span>,      <span class="hljs-comment">-- 非空+唯一</span><br>    email      text <span class="hljs-keyword">NOT NULL</span>,<br>    age        <span class="hljs-type">integer</span> <span class="hljs-keyword">CHECK</span> (age <span class="hljs-operator">&gt;=</span> <span class="hljs-number">0</span>),         <span class="hljs-comment">-- 检查约束</span><br>    dept_id    <span class="hljs-type">integer</span> <span class="hljs-keyword">REFERENCES</span> departments(id), <span class="hljs-comment">-- 外键</span><br>    created_at timestamptz <span class="hljs-keyword">DEFAULT</span> now()         <span class="hljs-comment">-- 默认值</span><br>);<br></code></pre></td></tr></table></figure>
+
+<p><strong>约束一览</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>约束</th>
+<th>作用</th>
+<th>记忆</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PRIMARY KEY</td>
+<td>唯一标识每行</td>
+<td>每表一个</td>
+</tr>
+<tr>
+<td>UNIQUE</td>
+<td>不能重复</td>
+<td>允许多个NULL</td>
+</tr>
+<tr>
+<td>NOT NULL</td>
+<td>不能为空</td>
+<td>—</td>
+</tr>
+<tr>
+<td>CHECK</td>
+<td>自定义条件</td>
+<td>如 age &gt;&#x3D; 0</td>
+</tr>
+<tr>
+<td>FOREIGN KEY</td>
+<td>关联其他表</td>
+<td>保证数据完整</td>
+</tr>
+<tr>
+<td>DEFAULT</td>
+<td>不填时用默认值</td>
+<td>如 now()</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="六、增删改查（CRUD）"><a href="#六、增删改查（CRUD）" class="headerlink" title="六、增删改查（CRUD）"></a>六、增删改查（CRUD）</h2><h3 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- 单行</span><br><span class="hljs-keyword">INSERT INTO</span> users (username, email) <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;alice&#x27;</span>, <span class="hljs-string">&#x27;a@b.com&#x27;</span>);<br><br><span class="hljs-comment">-- 多行</span><br><span class="hljs-keyword">INSERT INTO</span> users (username, email) <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;bob&#x27;</span>, <span class="hljs-string">&#x27;b@b.com&#x27;</span>), (<span class="hljs-string">&#x27;carol&#x27;</span>, <span class="hljs-string">&#x27;c@b.com&#x27;</span>);<br><br><span class="hljs-comment">-- 插入并返回</span><br><span class="hljs-keyword">INSERT INTO</span> users (username, email) <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;dave&#x27;</span>, <span class="hljs-string">&#x27;d@b.com&#x27;</span>) RETURNING id;<br><br><span class="hljs-comment">-- 有则更新，无则插入（UPSERT）</span><br><span class="hljs-keyword">INSERT INTO</span> users (username, email) <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;alice&#x27;</span>, <span class="hljs-string">&#x27;new@b.com&#x27;</span>)<br>    <span class="hljs-keyword">ON</span> CONFLICT (username) DO <span class="hljs-keyword">UPDATE</span> <span class="hljs-keyword">SET</span> email <span class="hljs-operator">=</span> EXCLUDED.email;<br></code></pre></td></tr></table></figure>
+
+<h3 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> age <span class="hljs-operator">&gt;</span> <span class="hljs-number">18</span> <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> created_at <span class="hljs-keyword">DESC</span> LIMIT <span class="hljs-number">10</span>;<br></code></pre></td></tr></table></figure>
+
+<h3 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">UPDATE</span> users <span class="hljs-keyword">SET</span> age <span class="hljs-operator">=</span> <span class="hljs-number">26</span> <span class="hljs-keyword">WHERE</span> username <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;alice&#x27;</span>;<br><br><span class="hljs-comment">-- 关联更新</span><br><span class="hljs-keyword">UPDATE</span> orders <span class="hljs-keyword">SET</span> status <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;cancelled&#x27;</span><br><span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> orders.user_id <span class="hljs-operator">=</span> users.id <span class="hljs-keyword">AND</span> users.status <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br></code></pre></td></tr></table></figure>
+
+<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">DELETE</span> <span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> status <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br><span class="hljs-keyword">TRUNCATE</span> <span class="hljs-keyword">TABLE</span> users;  <span class="hljs-comment">-- 快速清空整张表</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="批量导入导出"><a href="#批量导入导出" class="headerlink" title="批量导入导出"></a>批量导入导出</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">COPY</span> users <span class="hljs-keyword">TO</span> <span class="hljs-string">&#x27;/tmp/users.csv&#x27;</span> <span class="hljs-keyword">WITH</span> CSV HEADER;    <span class="hljs-comment">-- 导出</span><br><span class="hljs-keyword">COPY</span> users <span class="hljs-keyword">FROM</span> <span class="hljs-string">&#x27;/tmp/users.csv&#x27;</span> <span class="hljs-keyword">WITH</span> CSV HEADER;  <span class="hljs-comment">-- 导入</span><br></code></pre></td></tr></table></figure>
+
+<p>比一条条 INSERT 快几十倍。</p>
+<hr>
+<h2 id="七、JOIN-连表查询"><a href="#七、JOIN-连表查询" class="headerlink" title="七、JOIN 连表查询"></a>七、JOIN 连表查询</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- 内连接：两表都有的</span><br><span class="hljs-keyword">SELECT</span> u.name, d.dept_name<br><span class="hljs-keyword">FROM</span> users u <span class="hljs-keyword">JOIN</span> departments d <span class="hljs-keyword">ON</span> u.dept_id <span class="hljs-operator">=</span> d.id;<br><br><span class="hljs-comment">-- 左连接：左表全保留，右表没有的填NULL</span><br><span class="hljs-keyword">SELECT</span> u.name, o.amount<br><span class="hljs-keyword">FROM</span> users u <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">JOIN</span> orders o <span class="hljs-keyword">ON</span> u.id <span class="hljs-operator">=</span> o.user_id;<br><br><span class="hljs-comment">-- 右连接：和左连接反过来</span><br><span class="hljs-comment">-- 全连接：两边都保留</span><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> a <span class="hljs-keyword">FULL</span> <span class="hljs-keyword">JOIN</span> b <span class="hljs-keyword">ON</span> a.id <span class="hljs-operator">=</span> b.a_id;<br></code></pre></td></tr></table></figure>
+
+<p><strong>记忆口诀</strong>：内连交集，左连保左，右连保右，全连保全。</p>
+<hr>
+<h2 id="八、子查询"><a href="#八、子查询" class="headerlink" title="八、子查询"></a>八、子查询</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- IN：在不在列表里</span><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> id <span class="hljs-keyword">IN</span> (<span class="hljs-keyword">SELECT</span> user_id <span class="hljs-keyword">FROM</span> vip);<br><br><span class="hljs-comment">-- EXISTS：存不存在（通常比IN快）</span><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> users u <span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">EXISTS</span> (<span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span> <span class="hljs-keyword">FROM</span> orders o <span class="hljs-keyword">WHERE</span> o.user_id <span class="hljs-operator">=</span> u.id);<br><br><span class="hljs-comment">-- 标量子查询：返回单个值</span><br><span class="hljs-keyword">SELECT</span> name, (<span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">count</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> orders <span class="hljs-keyword">WHERE</span> user_id <span class="hljs-operator">=</span> users.id) <span class="hljs-keyword">AS</span> cnt <span class="hljs-keyword">FROM</span> users;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="九、聚合与分组"><a href="#九、聚合与分组" class="headerlink" title="九、聚合与分组"></a>九、聚合与分组</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> department, <span class="hljs-built_in">count</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">AS</span> 人数, <span class="hljs-built_in">avg</span>(salary) <span class="hljs-keyword">AS</span> 平均工资<br><span class="hljs-keyword">FROM</span> employees<br><span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> department<br><span class="hljs-keyword">HAVING</span> <span class="hljs-built_in">avg</span>(salary) <span class="hljs-operator">&gt;</span> <span class="hljs-number">10000</span>;  <span class="hljs-comment">-- HAVING筛选分组后的结果</span><br></code></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>count(*)</td>
+<td>计数</td>
+</tr>
+<tr>
+<td>sum(col)</td>
+<td>求和</td>
+</tr>
+<tr>
+<td>avg(col)</td>
+<td>平均</td>
+</tr>
+<tr>
+<td>max(col) &#x2F; min(col)</td>
+<td>最大&#x2F;最小</td>
+</tr>
+<tr>
+<td>string_agg(col, ‘,’)</td>
+<td>拼接字符串</td>
+</tr>
+<tr>
+<td>array_agg(col)</td>
+<td>聚合成数组</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="十、窗口函数"><a href="#十、窗口函数" class="headerlink" title="十、窗口函数"></a>十、窗口函数</h2><p>不分组，但能在每行上做计算，非常实用：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> name, department, salary,<br>    <span class="hljs-built_in">rank</span>() <span class="hljs-keyword">OVER</span> (<span class="hljs-keyword">PARTITION</span> <span class="hljs-keyword">BY</span> department <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> salary <span class="hljs-keyword">DESC</span>) <span class="hljs-keyword">AS</span> 部门排名<br><span class="hljs-keyword">FROM</span> employees;<br></code></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>作用</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>row_number()</td>
+<td>行号，不重复</td>
+<td>1,2,3,4</td>
+</tr>
+<tr>
+<td>rank()</td>
+<td>排名，并列跳号</td>
+<td>1,1,3,4</td>
+</tr>
+<tr>
+<td>dense_rank()</td>
+<td>排名，并列不跳</td>
+<td>1,1,2,3</td>
+</tr>
+<tr>
+<td>lag(col, 1)</td>
+<td>前一行的值</td>
+<td>环比计算</td>
+</tr>
+<tr>
+<td>lead(col, 1)</td>
+<td>后一行的值</td>
+<td>—</td>
+</tr>
+<tr>
+<td>sum() OVER()</td>
+<td>累计求和</td>
+<td>流水账累计</td>
+</tr>
+<tr>
+<td>ntile(4)</td>
+<td>分成4组</td>
+<td>分位数</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="十一、CTE-和递归查询"><a href="#十一、CTE-和递归查询" class="headerlink" title="十一、CTE 和递归查询"></a>十一、CTE 和递归查询</h2><h3 id="CTE（临时结果集）"><a href="#CTE（临时结果集）" class="headerlink" title="CTE（临时结果集）"></a>CTE（临时结果集）</h3><p>把复杂查询拆成几步，可读性好：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">WITH</span> vip_users <span class="hljs-keyword">AS</span> (<br>    <span class="hljs-keyword">SELECT</span> user_id <span class="hljs-keyword">FROM</span> orders <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> user_id <span class="hljs-keyword">HAVING</span> <span class="hljs-built_in">sum</span>(amount) <span class="hljs-operator">&gt;</span> <span class="hljs-number">10000</span><br>)<br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> id <span class="hljs-keyword">IN</span> (<span class="hljs-keyword">SELECT</span> user_id <span class="hljs-keyword">FROM</span> vip_users);<br></code></pre></td></tr></table></figure>
+
+<h3 id="递归（查树形结构）"><a href="#递归（查树形结构）" class="headerlink" title="递归（查树形结构）"></a>递归（查树形结构）</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- 员工→上级→上级的上级...</span><br><span class="hljs-keyword">WITH</span> <span class="hljs-keyword">RECURSIVE</span> tree <span class="hljs-keyword">AS</span> (<br>    <span class="hljs-keyword">SELECT</span> id, name, parent_id, <span class="hljs-number">1</span> <span class="hljs-keyword">AS</span> level <span class="hljs-keyword">FROM</span> employees <span class="hljs-keyword">WHERE</span> parent_id <span class="hljs-keyword">IS</span> <span class="hljs-keyword">NULL</span><br>    <span class="hljs-keyword">UNION</span> <span class="hljs-keyword">ALL</span><br>    <span class="hljs-keyword">SELECT</span> e.id, e.name, e.parent_id, t.level <span class="hljs-operator">+</span> <span class="hljs-number">1</span><br>    <span class="hljs-keyword">FROM</span> employees e <span class="hljs-keyword">JOIN</span> tree t <span class="hljs-keyword">ON</span> e.parent_id <span class="hljs-operator">=</span> t.id<br>)<br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> tree;<br></code></pre></td></tr></table></figure>
+
+<p>典型场景：组织架构、菜单树、评论楼中楼。</p>
+<hr>
+<h2 id="十二、索引"><a href="#十二、索引" class="headerlink" title="十二、索引"></a>十二、索引</h2><h3 id="为什么要索引"><a href="#为什么要索引" class="headerlink" title="为什么要索引"></a>为什么要索引</h3><p>没索引 &#x3D; 翻整本书找一个字。有索引 &#x3D; 直接看目录翻到那一页。</p>
+<h3 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h3><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>什么时候用</th>
+<th>记忆</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>B-tree</td>
+<td>等于、大于小于、排序（<strong>默认</strong>）</td>
+<td>万能选手</td>
+</tr>
+<tr>
+<td>Hash</td>
+<td>只有等于</td>
+<td>很少用</td>
+</tr>
+<tr>
+<td>GIN</td>
+<td>数组、JSONB、全文搜索</td>
+<td>多值查询</td>
+</tr>
+<tr>
+<td>GiST</td>
+<td>地理、范围、最近邻</td>
+<td>空间类</td>
+</tr>
+<tr>
+<td>BRIN</td>
+<td>时间序列大表</td>
+<td>体积极小</td>
+</tr>
+</tbody></table>
+<h3 id="怎么建"><a href="#怎么建" class="headerlink" title="怎么建"></a>怎么建</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- 普通索引</span><br><span class="hljs-keyword">CREATE</span> INDEX idx_email <span class="hljs-keyword">ON</span> users (email);<br><br><span class="hljs-comment">-- 唯一索引</span><br><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">UNIQUE</span> INDEX idx_username <span class="hljs-keyword">ON</span> users (username);<br><br><span class="hljs-comment">-- 复合索引（注意列顺序，最常查的放前面）</span><br><span class="hljs-keyword">CREATE</span> INDEX idx_user_date <span class="hljs-keyword">ON</span> orders (user_id, created_at);<br><br><span class="hljs-comment">-- 部分索引（只索引一部分数据，省空间）</span><br><span class="hljs-keyword">CREATE</span> INDEX idx_active <span class="hljs-keyword">ON</span> users (email) <span class="hljs-keyword">WHERE</span> status <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;<br><br><span class="hljs-comment">-- JSONB索引</span><br><span class="hljs-keyword">CREATE</span> INDEX idx_data <span class="hljs-keyword">ON</span> events <span class="hljs-keyword">USING</span> GIN (data);<br><br><span class="hljs-comment">-- 不锁表建索引（生产环境必须用）</span><br><span class="hljs-keyword">CREATE</span> INDEX CONCURRENTLY idx_xxx <span class="hljs-keyword">ON</span> <span class="hljs-keyword">table</span> (col);<br></code></pre></td></tr></table></figure>
+
+<h3 id="索引原则"><a href="#索引原则" class="headerlink" title="索引原则"></a>索引原则</h3><ul>
+<li><strong>查询多、写入少</strong>的列适合建索引</li>
+<li><strong>小表不需要</strong>索引</li>
+<li>复合索引遵循<strong>最左前缀</strong>（先匹配第一列）</li>
+<li>定期清理<strong>未使用的索引</strong>（浪费空间和写入性能）</li>
+</ul>
+<hr>
+<h2 id="十三、事务"><a href="#十三、事务" class="headerlink" title="十三、事务"></a>十三、事务</h2><h3 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">BEGIN</span>;                    <span class="hljs-comment">-- 开始事务</span><br><span class="hljs-keyword">UPDATE</span> accounts <span class="hljs-keyword">SET</span> balance <span class="hljs-operator">=</span> balance <span class="hljs-operator">-</span> <span class="hljs-number">100</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;<br><span class="hljs-keyword">UPDATE</span> accounts <span class="hljs-keyword">SET</span> balance <span class="hljs-operator">=</span> balance <span class="hljs-operator">+</span> <span class="hljs-number">100</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;<br><span class="hljs-keyword">COMMIT</span>;                   <span class="hljs-comment">-- 提交（全部生效）</span><br><span class="hljs-comment">-- 或 ROLLBACK;           -- 回滚（全部撤销）</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="保存点"><a href="#保存点" class="headerlink" title="保存点"></a>保存点</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">BEGIN</span>;<br><span class="hljs-keyword">INSERT INTO</span> t <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">1</span>);<br><span class="hljs-keyword">SAVEPOINT</span> sp1;<br><span class="hljs-keyword">INSERT INTO</span> t <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">2</span>);   <span class="hljs-comment">-- 这步出错了</span><br><span class="hljs-keyword">ROLLBACK</span> <span class="hljs-keyword">TO</span> sp1;             <span class="hljs-comment">-- 回到保存点，只撤销这步</span><br><span class="hljs-keyword">INSERT INTO</span> t <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">3</span>);<br><span class="hljs-keyword">COMMIT</span>;                      <span class="hljs-comment">-- 1和3成功</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h3><table>
+<thead>
+<tr>
+<th>级别</th>
+<th>解释</th>
+<th>PG默认</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Read Committed</td>
+<td>每条SQL看到的是执行那一刻的数据</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Repeatable Read</td>
+<td>整个事务看到的是事务开始时的快照</td>
+<td></td>
+</tr>
+<tr>
+<td>Serializable</td>
+<td>完全串行，最严格</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>大多数场景用默认就够了。</p>
+<h3 id="MVCC（简单理解）"><a href="#MVCC（简单理解）" class="headerlink" title="MVCC（简单理解）"></a>MVCC（简单理解）</h3><ul>
+<li>PG 不会直接修改旧数据，而是<strong>写一个新版本</strong></li>
+<li>旧版本保留着给其他正在读的事务用</li>
+<li>所以<strong>读不阻塞写，写不阻塞读</strong></li>
+<li>旧版本最终靠 VACUUM 清理</li>
+</ul>
+<hr>
+<h2 id="十四、锁"><a href="#十四、锁" class="headerlink" title="十四、锁"></a>十四、锁</h2><h3 id="行锁"><a href="#行锁" class="headerlink" title="行锁"></a>行锁</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> accounts <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">1</span> <span class="hljs-keyword">FOR</span> <span class="hljs-keyword">UPDATE</span>;        <span class="hljs-comment">-- 锁住这行，别人不能改</span><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> accounts <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">1</span> <span class="hljs-keyword">FOR</span> SHARE;         <span class="hljs-comment">-- 锁住但允许别人也读锁</span><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> accounts <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">1</span> <span class="hljs-keyword">FOR</span> <span class="hljs-keyword">UPDATE</span> NOWAIT; <span class="hljs-comment">-- 锁不到就立刻报错</span><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> accounts <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">1</span> <span class="hljs-keyword">FOR</span> <span class="hljs-keyword">UPDATE</span> <span class="hljs-keyword">SKIP</span> LOCKED; <span class="hljs-comment">-- 锁不到就跳过</span><br></code></pre></td></tr></table></figure>
+
+<p><code>SKIP LOCKED</code> 很实用：做任务队列时，多个 worker 各取各的任务。</p>
+<h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><p>两个事务互相等对方释放锁 → PG 自动检测到后杀掉一个。</p>
+<p><strong>避免</strong>：按固定顺序操作数据。</p>
+<hr>
+<h2 id="十五、VACUUM（清理）"><a href="#十五、VACUUM（清理）" class="headerlink" title="十五、VACUUM（清理）"></a>十五、VACUUM（清理）</h2><h3 id="为什么需要"><a href="#为什么需要" class="headerlink" title="为什么需要"></a>为什么需要</h3><p>PG 更新&#x2F;删除不会真的删数据，只是标记”死了”。时间久了<strong>死数据越来越多，表越来越大</strong>。</p>
+<h3 id="怎么用"><a href="#怎么用" class="headerlink" title="怎么用"></a>怎么用</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql">VACUUM users;            <span class="hljs-comment">-- 标记空间可复用（不缩表）</span><br>VACUUM <span class="hljs-keyword">FULL</span> users;       <span class="hljs-comment">-- 真正缩表（会锁表！生产慎用）</span><br>VACUUM ANALYZE users;    <span class="hljs-comment">-- 清理 + 更新统计信息</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="自动清理"><a href="#自动清理" class="headerlink" title="自动清理"></a>自动清理</h3><p>PG 有 <strong>autovacuum</strong>，默认开启，自动清理。一般不用手动操作，但要确认它在正常工作：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> relname, n_dead_tup, last_autovacuum <span class="hljs-keyword">FROM</span> pg_stat_user_tables;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="十六、函数和存储过程"><a href="#十六、函数和存储过程" class="headerlink" title="十六、函数和存储过程"></a>十六、函数和存储过程</h2><h3 id="函数（有返回值）"><a href="#函数（有返回值）" class="headerlink" title="函数（有返回值）"></a>函数（有返回值）</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">FUNCTION</span> get_age(birth <span class="hljs-type">date</span>) <span class="hljs-keyword">RETURNS</span> <span class="hljs-type">integer</span> <span class="hljs-keyword">AS</span> $$<br><span class="hljs-keyword">BEGIN</span><br>    <span class="hljs-keyword">RETURN</span> <span class="hljs-built_in">extract</span>(<span class="hljs-keyword">year</span> <span class="hljs-keyword">FROM</span> age(birth))::<span class="hljs-type">integer</span>;<br><span class="hljs-keyword">END</span>;<br>$$ <span class="hljs-keyword">LANGUAGE</span> plpgsql;<br><br><span class="hljs-keyword">SELECT</span> get_age(<span class="hljs-string">&#x27;1990-05-15&#x27;</span>);  <span class="hljs-comment">-- 36</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="存储过程（PG11-，无返回值，可以中途提交事务）"><a href="#存储过程（PG11-，无返回值，可以中途提交事务）" class="headerlink" title="存储过程（PG11+，无返回值，可以中途提交事务）"></a>存储过程（PG11+，无返回值，可以中途提交事务）</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">PROCEDURE</span> clean_old_data() <span class="hljs-keyword">LANGUAGE</span> plpgsql <span class="hljs-keyword">AS</span> $$<br><span class="hljs-keyword">BEGIN</span><br>    <span class="hljs-keyword">DELETE</span> <span class="hljs-keyword">FROM</span> logs <span class="hljs-keyword">WHERE</span> created_at <span class="hljs-operator">&lt;</span> now() <span class="hljs-operator">-</span> <span class="hljs-type">interval</span> <span class="hljs-string">&#x27;90 days&#x27;</span>;<br>    <span class="hljs-keyword">COMMIT</span>;<br><span class="hljs-keyword">END</span>;<br>$$;<br><br><span class="hljs-keyword">CALL</span> clean_old_data();<br></code></pre></td></tr></table></figure>
+
+<p><strong>区别</strong>：函数用 SELECT 调用有返回值；过程用 CALL 调用，能在中间 COMMIT。</p>
+<hr>
+<h2 id="十七、触发器"><a href="#十七、触发器" class="headerlink" title="十七、触发器"></a>十七、触发器</h2><p>当表发生增删改时<strong>自动执行</strong>一段逻辑：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- 1. 写触发器函数</span><br><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">FUNCTION</span> set_update_time() <span class="hljs-keyword">RETURNS</span> <span class="hljs-keyword">trigger</span> <span class="hljs-keyword">AS</span> $$<br><span class="hljs-keyword">BEGIN</span><br>    NEW.updated_at <span class="hljs-operator">=</span> now();<br>    <span class="hljs-keyword">RETURN</span> <span class="hljs-keyword">NEW</span>;<br><span class="hljs-keyword">END</span>;<br>$$ <span class="hljs-keyword">LANGUAGE</span> plpgsql;<br><br><span class="hljs-comment">-- 2. 绑到表上</span><br><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TRIGGER</span> trg_update_time<br>    BEFORE <span class="hljs-keyword">UPDATE</span> <span class="hljs-keyword">ON</span> users<br>    <span class="hljs-keyword">FOR</span> <span class="hljs-keyword">EACH</span> <span class="hljs-type">ROW</span><br>    <span class="hljs-keyword">EXECUTE</span> <span class="hljs-keyword">FUNCTION</span> set_update_time();<br></code></pre></td></tr></table></figure>
+
+<p>现在每次 UPDATE users，updated_at 自动更新。</p>
+<hr>
+<h2 id="十八、视图"><a href="#十八、视图" class="headerlink" title="十八、视图"></a>十八、视图</h2><h3 id="普通视图（虚拟表，每次查询时执行）"><a href="#普通视图（虚拟表，每次查询时执行）" class="headerlink" title="普通视图（虚拟表，每次查询时执行）"></a>普通视图（虚拟表，每次查询时执行）</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">VIEW</span> active_users <span class="hljs-keyword">AS</span><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> status <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;<br><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> active_users;  <span class="hljs-comment">-- 等于执行上面的SQL</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="物化视图（结果缓存到磁盘，需要手动刷新）"><a href="#物化视图（结果缓存到磁盘，需要手动刷新）" class="headerlink" title="物化视图（结果缓存到磁盘，需要手动刷新）"></a>物化视图（结果缓存到磁盘，需要手动刷新）</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> MATERIALIZED <span class="hljs-keyword">VIEW</span> mv_report <span class="hljs-keyword">AS</span><br><span class="hljs-keyword">SELECT</span> date_trunc(<span class="hljs-string">&#x27;month&#x27;</span>, created_at) <span class="hljs-keyword">AS</span> <span class="hljs-keyword">month</span>, <span class="hljs-built_in">sum</span>(amount)<br><span class="hljs-keyword">FROM</span> orders <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">1</span>;<br><br>REFRESH MATERIALIZED <span class="hljs-keyword">VIEW</span> mv_report;  <span class="hljs-comment">-- 手动刷新数据</span><br></code></pre></td></tr></table></figure>
+
+<p>适合：<strong>算一次很慢、数据不频繁变化</strong>的报表。</p>
+<hr>
+<h2 id="十九、分区表"><a href="#十九、分区表" class="headerlink" title="十九、分区表"></a>十九、分区表</h2><p>大表按规则拆成小表，查询自动只扫相关分区：</p>
+<h3 id="按时间范围分区（最常用）"><a href="#按时间范围分区（最常用）" class="headerlink" title="按时间范围分区（最常用）"></a>按时间范围分区（最常用）</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE TABLE</span> orders (id bigserial, created_at timestamptz, amount <span class="hljs-type">numeric</span>)<br><span class="hljs-keyword">PARTITION</span> <span class="hljs-keyword">BY</span> <span class="hljs-keyword">RANGE</span> (created_at);<br><br><span class="hljs-keyword">CREATE TABLE</span> orders_2024_q1 <span class="hljs-keyword">PARTITION</span> <span class="hljs-keyword">OF</span> orders<br>    <span class="hljs-keyword">FOR</span> <span class="hljs-keyword">VALUES</span> <span class="hljs-keyword">FROM</span> (<span class="hljs-string">&#x27;2024-01-01&#x27;</span>) <span class="hljs-keyword">TO</span> (<span class="hljs-string">&#x27;2024-04-01&#x27;</span>);<br><span class="hljs-keyword">CREATE TABLE</span> orders_2024_q2 <span class="hljs-keyword">PARTITION</span> <span class="hljs-keyword">OF</span> orders<br>    <span class="hljs-keyword">FOR</span> <span class="hljs-keyword">VALUES</span> <span class="hljs-keyword">FROM</span> (<span class="hljs-string">&#x27;2024-04-01&#x27;</span>) <span class="hljs-keyword">TO</span> (<span class="hljs-string">&#x27;2024-07-01&#x27;</span>);<br></code></pre></td></tr></table></figure>
+
+<p>查 <code>WHERE created_at = &#39;2024-02-01&#39;</code> 时只扫 q1 分区，不碰 q2。</p>
+<h3 id="按值列表分区"><a href="#按值列表分区" class="headerlink" title="按值列表分区"></a>按值列表分区</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">PARTITION</span> <span class="hljs-keyword">BY</span> LIST (country);<br><span class="hljs-comment">-- CN 一个分区，US 一个分区</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="按哈希分区"><a href="#按哈希分区" class="headerlink" title="按哈希分区"></a>按哈希分区</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">PARTITION</span> <span class="hljs-keyword">BY</span> HASH (user_id);<br><span class="hljs-comment">-- 均匀分散数据</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>什么时候分区</strong>：表超过几千万行、按时间查询多、需要快速归档旧数据。</p>
+<hr>
+<h2 id="二十、全文搜索"><a href="#二十、全文搜索" class="headerlink" title="二十、全文搜索"></a>二十、全文搜索</h2><p>PG 内置全文搜索，不用装 ES 也能搜：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- 基本搜索</span><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> articles<br><span class="hljs-keyword">WHERE</span> to_tsvector(<span class="hljs-string">&#x27;english&#x27;</span>, title) @@ to_tsquery(<span class="hljs-string">&#x27;english&#x27;</span>, <span class="hljs-string">&#x27;database &amp; fast&#x27;</span>);<br><br><span class="hljs-comment">-- 加索引提速</span><br><span class="hljs-keyword">CREATE</span> INDEX idx_search <span class="hljs-keyword">ON</span> articles <span class="hljs-keyword">USING</span> GIN (to_tsvector(<span class="hljs-string">&#x27;english&#x27;</span>, title));<br></code></pre></td></tr></table></figure>
+
+<p>中文需要装插件（zhparser &#x2F; pg_jieba）。</p>
+<hr>
+<h2 id="二十一、JSONB-操作"><a href="#二十一、JSONB-操作" class="headerlink" title="二十一、JSONB 操作"></a>二十一、JSONB 操作</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE TABLE</span> events (id serial, data jsonb);<br><span class="hljs-keyword">INSERT INTO</span> events (data) <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;&#123;&quot;type&quot;:&quot;click&quot;,&quot;page&quot;:&quot;/home&quot;&#125;&#x27;</span>);<br><br><span class="hljs-comment">-- 取值</span><br><span class="hljs-keyword">SELECT</span> data<span class="hljs-operator">-</span><span class="hljs-operator">&gt;&gt;</span><span class="hljs-string">&#x27;type&#x27;</span> <span class="hljs-keyword">FROM</span> events;             <span class="hljs-comment">-- click（文本）</span><br><span class="hljs-keyword">SELECT</span> data<span class="hljs-operator">-</span><span class="hljs-operator">&gt;</span><span class="hljs-string">&#x27;nested&#x27;</span><span class="hljs-operator">-</span><span class="hljs-operator">&gt;</span><span class="hljs-string">&#x27;key&#x27;</span> <span class="hljs-keyword">FROM</span> events;     <span class="hljs-comment">-- 嵌套取值</span><br><br><span class="hljs-comment">-- 查询</span><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> events <span class="hljs-keyword">WHERE</span> data @<span class="hljs-operator">&gt;</span> <span class="hljs-string">&#x27;&#123;&quot;type&quot;:&quot;click&quot;&#125;&#x27;</span>;   <span class="hljs-comment">-- 包含匹配</span><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> events <span class="hljs-keyword">WHERE</span> data ? <span class="hljs-string">&#x27;type&#x27;</span>;                <span class="hljs-comment">-- 有这个key吗</span><br><br><span class="hljs-comment">-- 修改</span><br><span class="hljs-keyword">UPDATE</span> events <span class="hljs-keyword">SET</span> data <span class="hljs-operator">=</span> data <span class="hljs-operator">||</span> <span class="hljs-string">&#x27;&#123;&quot;source&quot;:&quot;web&quot;&#125;&#x27;</span>;     <span class="hljs-comment">-- 加字段</span><br><span class="hljs-keyword">UPDATE</span> events <span class="hljs-keyword">SET</span> data <span class="hljs-operator">=</span> data <span class="hljs-operator">-</span> <span class="hljs-string">&#x27;source&#x27;</span>;                <span class="hljs-comment">-- 删字段</span><br><br><span class="hljs-comment">-- 索引（让JSONB查询快起来）</span><br><span class="hljs-keyword">CREATE</span> INDEX idx_data <span class="hljs-keyword">ON</span> events <span class="hljs-keyword">USING</span> GIN (data);<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="二十二、权限管理"><a href="#二十二、权限管理" class="headerlink" title="二十二、权限管理"></a>二十二、权限管理</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- 创建用户</span><br><span class="hljs-keyword">CREATE</span> ROLE app_user LOGIN PASSWORD <span class="hljs-string">&#x27;xxx&#x27;</span>;<br><br><span class="hljs-comment">-- 给权限</span><br><span class="hljs-keyword">GRANT</span> <span class="hljs-keyword">CONNECT</span> <span class="hljs-keyword">ON</span> DATABASE mydb <span class="hljs-keyword">TO</span> app_user;<br><span class="hljs-keyword">GRANT</span> USAGE <span class="hljs-keyword">ON</span> SCHEMA public <span class="hljs-keyword">TO</span> app_user;<br><span class="hljs-keyword">GRANT</span> <span class="hljs-keyword">SELECT</span>, <span class="hljs-keyword">INSERT</span>, <span class="hljs-keyword">UPDATE</span> <span class="hljs-keyword">ON</span> <span class="hljs-keyword">ALL</span> TABLES <span class="hljs-keyword">IN</span> SCHEMA public <span class="hljs-keyword">TO</span> app_user;<br><br><span class="hljs-comment">-- 收回权限</span><br><span class="hljs-keyword">REVOKE</span> <span class="hljs-keyword">DELETE</span> <span class="hljs-keyword">ON</span> users <span class="hljs-keyword">FROM</span> app_user;<br><br><span class="hljs-comment">-- 行级安全（用户只能看自己的数据）</span><br><span class="hljs-keyword">ALTER TABLE</span> orders ENABLE <span class="hljs-type">ROW</span> LEVEL SECURITY;<br><span class="hljs-keyword">CREATE</span> POLICY own_orders <span class="hljs-keyword">ON</span> orders <span class="hljs-keyword">USING</span> (user_id <span class="hljs-operator">=</span> current_user_id());<br></code></pre></td></tr></table></figure>
+
+<p><strong>原则</strong>：最小权限，生产环境<strong>永远别用 superuser</strong> 跑应用。</p>
+<hr>
+<h2 id="二十三、备份与恢复"><a href="#二十三、备份与恢复" class="headerlink" title="二十三、备份与恢复"></a>二十三、备份与恢复</h2><h3 id="逻辑备份（小中型库）"><a href="#逻辑备份（小中型库）" class="headerlink" title="逻辑备份（小中型库）"></a>逻辑备份（小中型库）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">pg_dump mydb &gt; backup.sql                   <span class="hljs-comment"># 备份</span><br>psql mydb &lt; backup.sql                      <span class="hljs-comment"># 恢复</span><br>pg_dump -Fc mydb &gt; backup.dump              <span class="hljs-comment"># 压缩格式</span><br>pg_restore -d mydb -j 4 backup.dump         <span class="hljs-comment"># 并行恢复</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="物理备份（大型库，支持恢复到任意时间点）"><a href="#物理备份（大型库，支持恢复到任意时间点）" class="headerlink" title="物理备份（大型库，支持恢复到任意时间点）"></a>物理备份（大型库，支持恢复到任意时间点）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">pg_basebackup -D /backup -Ft -z -P          <span class="hljs-comment"># 基础备份</span><br><span class="hljs-comment"># 配合 WAL 归档 → 可以恢复到任意秒</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="记忆"><a href="#记忆" class="headerlink" title="记忆"></a>记忆</h3><table>
+<thead>
+<tr>
+<th>库大小</th>
+<th>方案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&lt; 10GB</td>
+<td>pg_dump</td>
+</tr>
+<tr>
+<td>10-500GB</td>
+<td>pg_basebackup + WAL 归档</td>
+</tr>
+<tr>
+<td>&gt; 500GB</td>
+<td>pgBackRest &#x2F; Barman</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="二十四、主从复制"><a href="#二十四、主从复制" class="headerlink" title="二十四、主从复制"></a>二十四、主从复制</h2><h3 id="流复制（物理复制）"><a href="#流复制（物理复制）" class="headerlink" title="流复制（物理复制）"></a>流复制（物理复制）</h3><p>主库写 → WAL 日志同步到从库 → 从库重放。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 从库一键搭建</span><br>pg_basebackup -h 主库IP -D /data -R -P<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>从库<strong>只读</strong></li>
+<li>数据完全一致</li>
+<li>可配置同步&#x2F;异步</li>
+</ul>
+<h3 id="逻辑复制"><a href="#逻辑复制" class="headerlink" title="逻辑复制"></a>逻辑复制</h3><p>按表级别复制，更灵活：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- 主库</span><br><span class="hljs-keyword">CREATE</span> PUBLICATION my_pub <span class="hljs-keyword">FOR</span> <span class="hljs-keyword">TABLE</span> users, orders;<br><span class="hljs-comment">-- 从库</span><br><span class="hljs-keyword">CREATE</span> SUBSCRIPTION my_sub CONNECTION <span class="hljs-string">&#x27;host=主库&#x27;</span> PUBLICATION my_pub;<br></code></pre></td></tr></table></figure>
+
+<p><strong>区别</strong>：流复制是整个库完全复制；逻辑复制可以选表，可以跨版本。</p>
+<hr>
+<h2 id="二十五、高可用"><a href="#二十五、高可用" class="headerlink" title="二十五、高可用"></a>二十五、高可用</h2><table>
+<thead>
+<tr>
+<th>方案</th>
+<th>一句话</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Patroni + etcd</td>
+<td>最流行，自动故障转移</td>
+</tr>
+<tr>
+<td>PgBouncer</td>
+<td>连接池，减少连接数</td>
+</tr>
+<tr>
+<td>HAProxy</td>
+<td>负载均衡，读写分离</td>
+</tr>
+</tbody></table>
+<p>生产标配：<strong>PgBouncer + Patroni + 流复制</strong>。</p>
+<hr>
+<h2 id="二十六、性能优化"><a href="#二十六、性能优化" class="headerlink" title="二十六、性能优化"></a>二十六、性能优化</h2><h3 id="EXPLAIN-看执行计划"><a href="#EXPLAIN-看执行计划" class="headerlink" title="EXPLAIN 看执行计划"></a>EXPLAIN 看执行计划</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">EXPLAIN ANALYZE <span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> email <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;a@b.com&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<p>关注：</p>
+<ul>
+<li><code>Seq Scan</code> &#x3D; 全表扫描（慢）→ 考虑加索引</li>
+<li><code>Index Scan</code> &#x3D; 用了索引（好）</li>
+<li><code>actual rows</code> vs 估计差太多 → 跑一下 <code>ANALYZE</code> 更新统计</li>
+</ul>
+<h3 id="关键配置（改这几个就够80-场景）"><a href="#关键配置（改这几个就够80-场景）" class="headerlink" title="关键配置（改这几个就够80%场景）"></a>关键配置（改这几个就够80%场景）</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>设多少</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>shared_buffers</td>
+<td>内存的 25%</td>
+<td>数据缓存</td>
+</tr>
+<tr>
+<td>effective_cache_size</td>
+<td>内存的 75%</td>
+<td>告诉优化器有多少缓存</td>
+</tr>
+<tr>
+<td>work_mem</td>
+<td>64-256MB</td>
+<td>排序&#x2F;Hash用的内存</td>
+</tr>
+<tr>
+<td>maintenance_work_mem</td>
+<td>512MB-1GB</td>
+<td>建索引&#x2F;VACUUM用的内存</td>
+</tr>
+<tr>
+<td>max_connections</td>
+<td>100-300</td>
+<td>最大连接数（配合连接池）</td>
+</tr>
+</tbody></table>
+<h3 id="优化速查表"><a href="#优化速查表" class="headerlink" title="优化速查表"></a>优化速查表</h3><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>解决</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查询慢</td>
+<td>EXPLAIN → 加索引</td>
+</tr>
+<tr>
+<td>表太大</td>
+<td>分区</td>
+</tr>
+<tr>
+<td>连接数不够</td>
+<td>PgBouncer 连接池</td>
+</tr>
+<tr>
+<td>统计不准</td>
+<td>ANALYZE</td>
+</tr>
+<tr>
+<td>死元组多</td>
+<td>检查 autovacuum</td>
+</tr>
+<tr>
+<td>分页慢（OFFSET大）</td>
+<td>改用 <code>WHERE id &gt; 上一页最后ID</code></td>
+</tr>
+<tr>
+<td>SELECT *</td>
+<td>只查需要的列</td>
+</tr>
+<tr>
+<td>批量插入慢</td>
+<td>用 COPY 替代 INSERT</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="二十七、运维监控"><a href="#二十七、运维监控" class="headerlink" title="二十七、运维监控"></a>二十七、运维监控</h2><h3 id="常用查询"><a href="#常用查询" class="headerlink" title="常用查询"></a>常用查询</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- 当前谁在干什么</span><br><span class="hljs-keyword">SELECT</span> pid, usename, state, query <span class="hljs-keyword">FROM</span> pg_stat_activity <span class="hljs-keyword">WHERE</span> state <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;active&#x27;</span>;<br><br><span class="hljs-comment">-- 表大小排行</span><br><span class="hljs-keyword">SELECT</span> relname, pg_size_pretty(pg_total_relation_size(oid)) <span class="hljs-keyword">AS</span> size<br><span class="hljs-keyword">FROM</span> pg_class <span class="hljs-keyword">WHERE</span> relkind <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;r&#x27;</span> <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> pg_total_relation_size(oid) <span class="hljs-keyword">DESC</span> LIMIT <span class="hljs-number">10</span>;<br><br><span class="hljs-comment">-- 缓存命中率（低于99%要加内存）</span><br><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">sum</span>(heap_blks_hit) <span class="hljs-operator">/</span> (<span class="hljs-built_in">sum</span>(heap_blks_hit) <span class="hljs-operator">+</span> <span class="hljs-built_in">sum</span>(heap_blks_read)) <span class="hljs-keyword">FROM</span> pg_statio_user_tables;<br><br><span class="hljs-comment">-- 没人用的索引（可以删掉）</span><br><span class="hljs-keyword">SELECT</span> indexrelname, idx_scan <span class="hljs-keyword">FROM</span> pg_stat_user_indexes <span class="hljs-keyword">WHERE</span> idx_scan <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br><br><span class="hljs-comment">-- 杀掉慢查询</span><br><span class="hljs-keyword">SELECT</span> pg_terminate_backend(pid) <span class="hljs-keyword">FROM</span> pg_stat_activity<br><span class="hljs-keyword">WHERE</span> state <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;active&#x27;</span> <span class="hljs-keyword">AND</span> query_start <span class="hljs-operator">&lt;</span> now() <span class="hljs-operator">-</span> <span class="hljs-type">interval</span> <span class="hljs-string">&#x27;5 minutes&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<h3 id="必装扩展"><a href="#必装扩展" class="headerlink" title="必装扩展"></a>必装扩展</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> EXTENSION pg_stat_statements;  <span class="hljs-comment">-- 记录所有SQL的统计信息</span><br><span class="hljs-comment">-- 查最慢的SQL</span><br><span class="hljs-keyword">SELECT</span> query, calls, mean_exec_time <span class="hljs-keyword">FROM</span> pg_stat_statements <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> mean_exec_time <span class="hljs-keyword">DESC</span> LIMIT <span class="hljs-number">10</span>;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="二十八、常用扩展"><a href="#二十八、常用扩展" class="headerlink" title="二十八、常用扩展"></a>二十八、常用扩展</h2><table>
+<thead>
+<tr>
+<th>扩展</th>
+<th>干什么</th>
+<th>场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>pg_stat_statements</td>
+<td>SQL统计</td>
+<td>找慢查询</td>
+</tr>
+<tr>
+<td>PostGIS</td>
+<td>地理空间</td>
+<td>地图、附近的人</td>
+</tr>
+<tr>
+<td>pgvector</td>
+<td>向量搜索</td>
+<td>AI &#x2F; RAG</td>
+</tr>
+<tr>
+<td>pg_trgm</td>
+<td>模糊匹配</td>
+<td>搜索建议</td>
+</tr>
+<tr>
+<td>uuid-ossp</td>
+<td>生成UUID</td>
+<td>分布式ID</td>
+</tr>
+<tr>
+<td>pg_cron</td>
+<td>定时任务</td>
+<td>定时清理</td>
+</tr>
+<tr>
+<td>pg_repack</td>
+<td>在线整理表</td>
+<td>不锁表缩表</td>
+</tr>
+</tbody></table>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/szk.github.io/categories/server/" class="category-chain-item">server</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/szk.github.io/tags/PostgreSQL/" class="print-no-link">#PostgreSQL</a>
+      
+        <a href="/szk.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="print-no-link">#数据库</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>PostgreSQL 是什么</div>
+      <div>https://jackbrownm.github.io/szk.github.io/2026/08/02/2026-08-02-postgresql/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>jackBrownM</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>August 2, 2026</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/szk.github.io/2026/08/02/2026-08-02-rabbitmq/" title="RabbitMQ 入门笔记">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">RabbitMQ 入门笔记</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/szk.github.io/2026/08/02/2026-08-02-langchain/" title="LangChain 入门笔记">
+                        <span class="hidden-mobile">LangChain 入门笔记</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+      <span>szk blog</span>
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/szk.github.io/js/events.js" ></script>
+<script  src="/szk.github.io/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/szk.github.io/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/szk.github.io/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/szk.github.io/js/color-toggle.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/szk.github.io/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
