@@ -1,0 +1,1078 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/szk.github.io/img/fluid.png">
+  <link rel="icon" href="/szk.github.io/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="jackBrownM">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Prompt 工程Prompt 工程主要包含五部分：  System Prompt Zero-shot 与 Few-shot 角色与约束 输出格式控制 Prompt 模板管理   5.1 System Prompt核心思想System Prompt 用来定义 Agent：  是谁 要完成什么任务 可以做什么 不能做什么 按什么流程工作 以什么格式输出  经典 Demo：代码审查 Agent弱 Pr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Prompt 工程入门笔记">
+<meta property="og:url" content="https://jackbrownm.github.io/szk.github.io/2026/08/15/2026-08-15-prompt-engineering/index.html">
+<meta property="og:site_name" content="szk&#39;s blog">
+<meta property="og:description" content="Prompt 工程Prompt 工程主要包含五部分：  System Prompt Zero-shot 与 Few-shot 角色与约束 输出格式控制 Prompt 模板管理   5.1 System Prompt核心思想System Prompt 用来定义 Agent：  是谁 要完成什么任务 可以做什么 不能做什么 按什么流程工作 以什么格式输出  经典 Demo：代码审查 Agent弱 Pr">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-08-15T05:30:00.000Z">
+<meta property="article:modified_time" content="2026-08-15T05:15:05.065Z">
+<meta property="article:author" content="jackBrownM">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="Prompt">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Prompt 工程入门笔记 - szk&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/szk.github.io/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/szk.github.io/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/szk.github.io/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"jackbrownm.github.io","root":"/szk.github.io/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/szk.github.io/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/szk.github.io/js/utils.js" ></script>
+  <script  src="/szk.github.io/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/szk.github.io/">
+      <strong>szk&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/szk.github.io/" target="_self">
+                
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/szk.github.io/categories/" target="_self">
+                
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/szk.github.io/archives/" target="_self">
+                
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/szk.github.io/tags/" target="_self">
+                
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/szk.github.io/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>Home</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/szk.github.io/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>Categories</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/szk.github.io/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>Archives</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/szk.github.io/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>Tags</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>Search</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="Light"
+               data-label-dark="Dark">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">Dark</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/szk.github.io/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Prompt 工程入门笔记"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-08-15 13:30" pubdate>
+          August 15, 2026 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8.2k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          69 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Prompt 工程入门笔记</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Prompt-工程"><a href="#Prompt-工程" class="headerlink" title="Prompt 工程"></a>Prompt 工程</h1><p>Prompt 工程主要包含五部分：</p>
+<ol>
+<li>System Prompt</li>
+<li>Zero-shot 与 Few-shot</li>
+<li>角色与约束</li>
+<li>输出格式控制</li>
+<li>Prompt 模板管理</li>
+</ol>
+<hr>
+<h2 id="5-1-System-Prompt"><a href="#5-1-System-Prompt" class="headerlink" title="5.1 System Prompt"></a>5.1 System Prompt</h2><h3 id="核心思想"><a href="#核心思想" class="headerlink" title="核心思想"></a>核心思想</h3><p>System Prompt 用来定义 Agent：</p>
+<ul>
+<li>是谁</li>
+<li>要完成什么任务</li>
+<li>可以做什么</li>
+<li>不能做什么</li>
+<li>按什么流程工作</li>
+<li>以什么格式输出</li>
+</ul>
+<h3 id="经典-Demo：代码审查-Agent"><a href="#经典-Demo：代码审查-Agent" class="headerlink" title="经典 Demo：代码审查 Agent"></a>经典 Demo：代码审查 Agent</h3><h4 id="弱-Prompt"><a href="#弱-Prompt" class="headerlink" title="弱 Prompt"></a>弱 Prompt</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs">你是一个代码审查助手。<br></code></pre></td></tr></table></figure>
+
+<p>问题：角色、流程、边界和输出要求都不明确。</p>
+<h4 id="结构化-Prompt"><a href="#结构化-Prompt" class="headerlink" title="结构化 Prompt"></a>结构化 Prompt</h4><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section"># 角色</span><br><br>你是一名 Python 代码审查员，负责发现代码中的缺陷和风险。<br><br><span class="hljs-section"># 审查范围</span><br><br>检查以下内容：<br><span class="hljs-bullet">1.</span> 逻辑错误<br><span class="hljs-bullet">2.</span> 安全风险<br><span class="hljs-bullet">3.</span> 性能问题<br><span class="hljs-bullet">4.</span> 可维护性问题<br><br><span class="hljs-section"># 工作流程</span><br><br><span class="hljs-bullet">1.</span> 阅读代码和上下文<br><span class="hljs-bullet">2.</span> 找出确定存在的问题<br><span class="hljs-bullet">3.</span> 按严重程度排序<br><span class="hljs-bullet">4.</span> 给出具体修改建议<br><br><span class="hljs-section"># 约束</span><br><br><span class="hljs-bullet">-</span> 不猜测没有证据的问题<br><span class="hljs-bullet">-</span> 不讨论无关的代码风格<br><span class="hljs-bullet">-</span> 最多输出 10 个问题<br><span class="hljs-bullet">-</span> 无法确定时明确说明<br><br><span class="hljs-section"># 输出格式</span><br><br>每个问题包含：<br><span class="hljs-bullet">-</span> 严重程度<br><span class="hljs-bullet">-</span> 问题位置<br><span class="hljs-bullet">-</span> 问题说明<br><span class="hljs-bullet">-</span> 修改建议<br></code></pre></td></tr></table></figure>
+
+<h3 id="推荐结构"><a href="#推荐结构" class="headerlink" title="推荐结构"></a>推荐结构</h3><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs 1c"><span class="hljs-meta"># 角色</span><br>你是谁，负责什么。<br><br><span class="hljs-meta"># 目标</span><br>最终需要完成什么。<br><br><span class="hljs-meta"># 上下文</span><br>完成任务需要知道的信息。<br><br><span class="hljs-meta"># 工作流程</span><br>应该按照什么顺序处理。<br><br><span class="hljs-meta"># 约束</span><br>必须遵守和禁止执行的规则。<br><br><span class="hljs-meta"># 输出格式</span><br>最终结果应采用什么结构。<br></code></pre></td></tr></table></figure>
+
+<h3 id="Agent-设计实践"><a href="#Agent-设计实践" class="headerlink" title="Agent 设计实践"></a>Agent 设计实践</h3><p>将固定规则和动态信息分开：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">build_system_prompt</span>(<span class="hljs-params">config, context</span>):<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">f&quot;&quot;&quot;</span><br><span class="hljs-string"># 角色</span><br><span class="hljs-string">你是 <span class="hljs-subst">&#123;config.role&#125;</span>。</span><br><span class="hljs-string"></span><br><span class="hljs-string"># 目标</span><br><span class="hljs-string"><span class="hljs-subst">&#123;config.goal&#125;</span></span><br><span class="hljs-string"></span><br><span class="hljs-string"># 可用工具</span><br><span class="hljs-string"><span class="hljs-subst">&#123;config.tools&#125;</span></span><br><span class="hljs-string"></span><br><span class="hljs-string"># 工作流程</span><br><span class="hljs-string"><span class="hljs-subst">&#123;config.workflow&#125;</span></span><br><span class="hljs-string"></span><br><span class="hljs-string"># 约束</span><br><span class="hljs-string"><span class="hljs-subst">&#123;config.constraints&#125;</span></span><br><span class="hljs-string"></span><br><span class="hljs-string"># 当前上下文</span><br><span class="hljs-string">当前时间：<span class="hljs-subst">&#123;context.current_time&#125;</span></span><br><span class="hljs-string">用户偏好：<span class="hljs-subst">&#123;context.preferences&#125;</span></span><br><span class="hljs-string"></span><br><span class="hljs-string"># 输出格式</span><br><span class="hljs-string"><span class="hljs-subst">&#123;config.output_format&#125;</span></span><br><span class="hljs-string">&quot;&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><p>System Prompt 是所有 Agent 的基础，尤其适用于：</p>
+<ul>
+<li>工具调用 Agent</li>
+<li>客服 Agent</li>
+<li>代码 Agent</li>
+<li>数据分析 Agent</li>
+<li>多角色 Agent</li>
+</ul>
+<hr>
+<h2 id="5-2-Zero-shot-与-Few-shot"><a href="#5-2-Zero-shot-与-Few-shot" class="headerlink" title="5.2 Zero-shot 与 Few-shot"></a>5.2 Zero-shot 与 Few-shot</h2><h3 id="核心思想-1"><a href="#核心思想-1" class="headerlink" title="核心思想"></a>核心思想</h3><p><strong>Zero-shot：</strong> 不提供示例，直接描述任务。</p>
+<p><strong>Few-shot：</strong> 提供少量示例，让模型学习任务规则和输出形式。</p>
+<hr>
+<h3 id="经典-Demo：情感分类"><a href="#经典-Demo：情感分类" class="headerlink" title="经典 Demo：情感分类"></a>经典 Demo：情感分类</h3><h4 id="Zero-shot"><a href="#Zero-shot" class="headerlink" title="Zero-shot"></a>Zero-shot</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs">判断下面评论的情感，只输出“正面”或“负面”。<br><br>评论：这家餐厅的服务很好，我下次还会来。<br></code></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs">正面<br></code></pre></td></tr></table></figure>
+
+<p>适合规则简单、模型容易理解的任务。</p>
+<h4 id="Few-shot"><a href="#Few-shot" class="headerlink" title="Few-shot"></a>Few-shot</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs">判断评论情感，只输出“正面”或“负面”。<br><br>示例 1：<br>评论：电影非常精彩，演员表现也很好。<br>输出：正面<br><br>示例 2：<br>评论：等了一个小时，饭还是冷的。<br>输出：负面<br><br>示例 3：<br>评论：操作简单，运行速度也很快。<br>输出：正面<br><br>现在处理：<br><br>评论：软件经常闪退，数据还会丢失。<br>输出：<br></code></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs">负面<br></code></pre></td></tr></table></figure>
+
+<h3 id="什么时候使用-Few-shot"><a href="#什么时候使用-Few-shot" class="headerlink" title="什么时候使用 Few-shot"></a>什么时候使用 Few-shot</h3><table>
+<thead>
+<tr>
+<th>情况</th>
+<th>建议</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>任务简单、规则明确</td>
+<td>Zero-shot</td>
+</tr>
+<tr>
+<td>输出格式严格</td>
+<td>Few-shot</td>
+</tr>
+<tr>
+<td>分类标准比较特殊</td>
+<td>Few-shot</td>
+</tr>
+<tr>
+<td>模型经常误解要求</td>
+<td>Few-shot</td>
+</tr>
+<tr>
+<td>不同类别容易混淆</td>
+<td>Few-shot</td>
+</tr>
+</tbody></table>
+<h3 id="经典-Demo：工具调用"><a href="#经典-Demo：工具调用" class="headerlink" title="经典 Demo：工具调用"></a>经典 Demo：工具调用</h3><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs 1c">根据用户请求生成工具调用。<br><br>示例 <span class="hljs-number">1</span>：<br><br>用户：查询北京今天的天气<br>调用：<br>&#123;<span class="hljs-string">&quot;tool&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;get_weather&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-string">&quot;city&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;北京&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-string">&quot;date&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;今天&quot;</span>&#125;<br><br>示例 <span class="hljs-number">2</span>：<br><br>用户：查询上海明天的天气<br>调用：<br>&#123;<span class="hljs-string">&quot;tool&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;get_weather&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-string">&quot;city&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;上海&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-string">&quot;date&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;明天&quot;</span>&#125;<br><br>现在处理：<br><br>用户：查询广州后天的天气<br>调用：<br></code></pre></td></tr></table></figure>
+
+<p>预期输出：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;tool&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;get_weather&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;city&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;广州&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;date&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;后天&quot;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="Agent-设计实践-1"><a href="#Agent-设计实践-1" class="headerlink" title="Agent 设计实践"></a>Agent 设计实践</h3><p>生产环境中可以根据用户输入，动态检索最相似的示例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">build_few_shot_prompt</span>(<span class="hljs-params">user_input, example_store, k=<span class="hljs-number">3</span></span>):<br>    examples = example_store.similarity_search(<br>        query=user_input,<br>        k=k,<br>    )<br><br>    examples_text = <span class="hljs-string">&quot;\n\n&quot;</span>.join(<br>        <span class="hljs-string">f&quot;输入：<span class="hljs-subst">&#123;example.<span class="hljs-built_in">input</span>&#125;</span>\n输出：<span class="hljs-subst">&#123;example.output&#125;</span>&quot;</span><br>        <span class="hljs-keyword">for</span> example <span class="hljs-keyword">in</span> examples<br>    )<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">f&quot;&quot;&quot;</span><br><span class="hljs-string">参考以下示例：</span><br><span class="hljs-string"></span><br><span class="hljs-string"><span class="hljs-subst">&#123;examples_text&#125;</span></span><br><span class="hljs-string"></span><br><span class="hljs-string">现在处理：</span><br><span class="hljs-string"></span><br><span class="hljs-string">输入：<span class="hljs-subst">&#123;user_input&#125;</span></span><br><span class="hljs-string">输出：</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="使用原则"><a href="#使用原则" class="headerlink" title="使用原则"></a>使用原则</h3><ol>
+<li>示例应正确且具有代表性。</li>
+<li>示例格式必须与目标输出一致。</li>
+<li>优先选择与当前任务相似的示例。</li>
+<li>一般使用 2～5 个示例即可。</li>
+<li>示例过多会增加 Token 成本并干扰模型。</li>
+</ol>
+<hr>
+<h2 id="5-3-角色与约束"><a href="#5-3-角色与约束" class="headerlink" title="5.3 角色与约束"></a>5.3 角色与约束</h2><h3 id="核心思想-2"><a href="#核心思想-2" class="headerlink" title="核心思想"></a>核心思想</h3><p>角色定义模型应该以什么视角处理问题，约束定义它必须遵守哪些规则。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs">角色：应该怎么思考和表达<br>约束：哪些事情必须做或不能做<br></code></pre></td></tr></table></figure>
+
+<h3 id="经典-Demo：系统架构师"><a href="#经典-Demo：系统架构师" class="headerlink" title="经典 Demo：系统架构师"></a>经典 Demo：系统架构师</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section"># 角色</span><br><br>你是一名负责分布式系统设计的高级架构师。<br><br>设计原则：<br><span class="hljs-bullet">-</span> 优先选择简单、成熟的方案<br><span class="hljs-bullet">-</span> 关注可用性、扩展性和可观测性<br><span class="hljs-bullet">-</span> 不在缺少数据时进行容量判断<br><br><span class="hljs-section"># 约束</span><br><br>必须：<br><span class="hljs-bullet">-</span> 至少比较两种方案<br><span class="hljs-bullet">-</span> 说明推荐理由<br><span class="hljs-bullet">-</span> 指出方案的适用范围和局限性<br><br>禁止：<br><span class="hljs-bullet">-</span> 编造性能数据<br><span class="hljs-bullet">-</span> 输出密钥、密码或 Token<br><span class="hljs-bullet">-</span> 建议关闭认证、HTTPS 等安全措施<br></code></pre></td></tr></table></figure>
+
+<h3 id="硬约束与软约束"><a href="#硬约束与软约束" class="headerlink" title="硬约束与软约束"></a>硬约束与软约束</h3><h4 id="硬约束"><a href="#硬约束" class="headerlink" title="硬约束"></a>硬约束</h4><p>必须严格执行，违反时应拦截输出。</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc"><span class="hljs-bullet">- </span>不得泄露敏感信息<br><span class="hljs-bullet">- </span>不得执行未经授权的删除操作<br><span class="hljs-bullet">- </span>输出必须符合指定 Schema<br><span class="hljs-bullet">- </span>工具调用必须通过权限检查<br></code></pre></td></tr></table></figure>
+
+<h4 id="软约束"><a href="#软约束" class="headerlink" title="软约束"></a>软约束</h4><p>用于引导输出风格，不一定能完全保证。</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc"><span class="hljs-bullet">- </span>优先使用中文<br><span class="hljs-bullet">- </span>回答尽量简洁<br><span class="hljs-bullet">- </span>优先推荐成熟方案<br><span class="hljs-bullet">- </span>时间估算使用范围表达<br></code></pre></td></tr></table></figure>
+
+<h3 id="Agent-设计实践-2"><a href="#Agent-设计实践-2" class="headerlink" title="Agent 设计实践"></a>Agent 设计实践</h3><p>重要约束不能只写在 Prompt 中，还需要代码检查：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">ConstraintChecker</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">validate</span>(<span class="hljs-params">self, output</span>):<br>        forbidden_patterns = [<br>            <span class="hljs-string">&quot;password=&quot;</span>,<br>            <span class="hljs-string">&quot;secret_key=&quot;</span>,<br>            <span class="hljs-string">&quot;rm -rf /&quot;</span>,<br>        ]<br><br>        <span class="hljs-keyword">for</span> pattern <span class="hljs-keyword">in</span> forbidden_patterns:<br>            <span class="hljs-keyword">if</span> pattern <span class="hljs-keyword">in</span> output:<br>                <span class="hljs-keyword">return</span> &#123;<br>                    <span class="hljs-string">&quot;valid&quot;</span>: <span class="hljs-literal">False</span>,<br>                    <span class="hljs-string">&quot;reason&quot;</span>: <span class="hljs-string">f&quot;输出包含禁止内容：<span class="hljs-subst">&#123;pattern&#125;</span>&quot;</span>,<br>                &#125;<br><br>        <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;valid&quot;</span>: <span class="hljs-literal">True</span>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="多角色设计"><a href="#多角色设计" class="headerlink" title="多角色设计"></a>多角色设计</h3><p>同一任务可以从不同角色进行评审：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python">PERSONAS = &#123;<br>    <span class="hljs-string">&quot;architect&quot;</span>: <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">你是系统架构师。</span><br><span class="hljs-string">关注系统边界、扩展性、可用性和复杂度。</span><br><span class="hljs-string">&quot;&quot;&quot;</span>,<br>    <span class="hljs-string">&quot;security_reviewer&quot;</span>: <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">你是安全审查员。</span><br><span class="hljs-string">关注认证、授权、数据泄露和攻击面。</span><br><span class="hljs-string">&quot;&quot;&quot;</span>,<br>    <span class="hljs-string">&quot;code_reviewer&quot;</span>: <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">你是代码审查员。</span><br><span class="hljs-string">关注逻辑错误、可维护性和测试覆盖。</span><br><span class="hljs-string">&quot;&quot;&quot;</span>,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>角色有助于确定分析视角，但不能替代真实能力、工具权限和外部验证。</p>
+</blockquote>
+<h3 id="适用场景-1"><a href="#适用场景-1" class="headerlink" title="适用场景"></a>适用场景</h3><ul>
+<li>多视角评审</li>
+<li>安全与合规 Agent</li>
+<li>专业领域 Agent</li>
+<li>多角色协作系统</li>
+<li>权限敏感的工具 Agent</li>
+</ul>
+<hr>
+<h2 id="5-4-输出格式控制"><a href="#5-4-输出格式控制" class="headerlink" title="5.4 输出格式控制"></a>5.4 输出格式控制</h2><h3 id="核心思想-3"><a href="#核心思想-3" class="headerlink" title="核心思想"></a>核心思想</h3><p>让模型输出可解析、可验证、可被程序直接使用的数据。</p>
+<h3 id="经典-Demo：代码审查结果"><a href="#经典-Demo：代码审查结果" class="headerlink" title="经典 Demo：代码审查结果"></a>经典 Demo：代码审查结果</h3><h4 id="自由文本"><a href="#自由文本" class="headerlink" title="自由文本"></a>自由文本</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs">代码整体还可以，但是变量命名不太清楚，错误处理也需要改进。<br></code></pre></td></tr></table></figure>
+
+<p>问题：程序难以稳定提取结论和问题列表。</p>
+<h4 id="结构化-JSON"><a href="#结构化-JSON" class="headerlink" title="结构化 JSON"></a>结构化 JSON</h4><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;verdict&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;REQUEST_CHANGES&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;score&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">6</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;issues&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-punctuation">&#123;</span><br>      <span class="hljs-attr">&quot;severity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Major&quot;</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">&quot;line&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">42</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">&quot;message&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;未处理数据库连接异常&quot;</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">&quot;suggestion&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;捕获异常并记录失败原因&quot;</span><br>    <span class="hljs-punctuation">&#125;</span><br>  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;summary&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;需要补充异常处理后再合并&quot;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="推荐方案：Schema-验证"><a href="#推荐方案：Schema-验证" class="headerlink" title="推荐方案：Schema 验证"></a>推荐方案：Schema 验证</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">Literal</span><br><br><span class="hljs-keyword">from</span> pydantic <span class="hljs-keyword">import</span> BaseModel, Field<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">ReviewIssue</span>(<span class="hljs-title class_ inherited__">BaseModel</span>):<br>    severity: <span class="hljs-type">Literal</span>[<span class="hljs-string">&quot;Critical&quot;</span>, <span class="hljs-string">&quot;Major&quot;</span>, <span class="hljs-string">&quot;Minor&quot;</span>]<br>    line: <span class="hljs-built_in">int</span><br>    message: <span class="hljs-built_in">str</span><br>    suggestion: <span class="hljs-built_in">str</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">ReviewResult</span>(<span class="hljs-title class_ inherited__">BaseModel</span>):<br>    verdict: <span class="hljs-type">Literal</span>[<span class="hljs-string">&quot;APPROVE&quot;</span>, <span class="hljs-string">&quot;REQUEST_CHANGES&quot;</span>]<br>    score: <span class="hljs-built_in">float</span> = Field(ge=<span class="hljs-number">0</span>, le=<span class="hljs-number">10</span>)<br>    issues: <span class="hljs-built_in">list</span>[ReviewIssue]<br>    summary: <span class="hljs-built_in">str</span><br></code></pre></td></tr></table></figure>
+
+<p>验证模型输出：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">result = ReviewResult.model_validate_json(raw_output)<br></code></pre></td></tr></table></figure>
+
+<h3 id="推荐方案：结构化输出或-Function-Calling"><a href="#推荐方案：结构化输出或-Function-Calling" class="headerlink" title="推荐方案：结构化输出或 Function Calling"></a>推荐方案：结构化输出或 Function Calling</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs python">review_tool = &#123;<br>    <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;function&quot;</span>,<br>    <span class="hljs-string">&quot;function&quot;</span>: &#123;<br>        <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;submit_review&quot;</span>,<br>        <span class="hljs-string">&quot;description&quot;</span>: <span class="hljs-string">&quot;提交代码审查结果&quot;</span>,<br>        <span class="hljs-string">&quot;parameters&quot;</span>: &#123;<br>            <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;object&quot;</span>,<br>            <span class="hljs-string">&quot;properties&quot;</span>: &#123;<br>                <span class="hljs-string">&quot;verdict&quot;</span>: &#123;<br>                    <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,<br>                    <span class="hljs-string">&quot;enum&quot;</span>: [<span class="hljs-string">&quot;APPROVE&quot;</span>, <span class="hljs-string">&quot;REQUEST_CHANGES&quot;</span>],<br>                &#125;,<br>                <span class="hljs-string">&quot;score&quot;</span>: &#123;<br>                    <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;number&quot;</span>,<br>                    <span class="hljs-string">&quot;minimum&quot;</span>: <span class="hljs-number">0</span>,<br>                    <span class="hljs-string">&quot;maximum&quot;</span>: <span class="hljs-number">10</span>,<br>                &#125;,<br>                <span class="hljs-string">&quot;issues&quot;</span>: &#123;<br>                    <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>,<br>                    <span class="hljs-string">&quot;items&quot;</span>: &#123;<br>                        <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;object&quot;</span>,<br>                        <span class="hljs-string">&quot;properties&quot;</span>: &#123;<br>                            <span class="hljs-string">&quot;severity&quot;</span>: &#123;<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>&#125;,<br>                            <span class="hljs-string">&quot;line&quot;</span>: &#123;<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;integer&quot;</span>&#125;,<br>                            <span class="hljs-string">&quot;message&quot;</span>: &#123;<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>&#125;,<br>                            <span class="hljs-string">&quot;suggestion&quot;</span>: &#123;<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>&#125;,<br>                        &#125;,<br>                        <span class="hljs-string">&quot;required&quot;</span>: [<br>                            <span class="hljs-string">&quot;severity&quot;</span>,<br>                            <span class="hljs-string">&quot;line&quot;</span>,<br>                            <span class="hljs-string">&quot;message&quot;</span>,<br>                            <span class="hljs-string">&quot;suggestion&quot;</span>,<br>                        ],<br>                    &#125;,<br>                &#125;,<br>            &#125;,<br>            <span class="hljs-string">&quot;required&quot;</span>: [<span class="hljs-string">&quot;verdict&quot;</span>, <span class="hljs-string">&quot;score&quot;</span>, <span class="hljs-string">&quot;issues&quot;</span>],<br>        &#125;,<br>    &#125;,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="格式控制的可靠性"><a href="#格式控制的可靠性" class="headerlink" title="格式控制的可靠性"></a>格式控制的可靠性</h3><p>从低到高：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">自然语言要求<br>    ↓<br>提供 <span class="hljs-type">JSON</span> 示例<br>    ↓<br><span class="hljs-type">JSON</span> <span class="hljs-keyword">Schema</span> 验证<br>    ↓<br>模型原生结构化输出或 <span class="hljs-keyword">Function</span> Calling<br></code></pre></td></tr></table></figure>
+
+<h3 id="错误处理流程"><a href="#错误处理流程" class="headerlink" title="错误处理流程"></a>错误处理流程</h3><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">模型输出<br>   ↓<br>解析 <span class="hljs-keyword">JSON</span><br><span class="hljs-keyword"></span>   ↓<br><span class="hljs-keyword">Schema </span>验证<br>   ├── 通过 → 交给下游系统<br>   └── 失败 → 修复或重新生成<br></code></pre></td></tr></table></figure>
+
+<h3 id="适用场景-2"><a href="#适用场景-2" class="headerlink" title="适用场景"></a>适用场景</h3><ul>
+<li>API 调用</li>
+<li>数据入库</li>
+<li>自动化工作流</li>
+<li>Webhook 消息</li>
+<li>多 Agent 数据传递</li>
+</ul>
+<hr>
+<h2 id="5-5-Prompt-模板管理"><a href="#5-5-Prompt-模板管理" class="headerlink" title="5.5 Prompt 模板管理"></a>5.5 Prompt 模板管理</h2><h3 id="核心思想-4"><a href="#核心思想-4" class="headerlink" title="核心思想"></a>核心思想</h3><p>Prompt 不应散落在代码中，而应作为可复用、可版本化、可测试的配置进行管理。</p>
+<h3 id="经典-Demo"><a href="#经典-Demo" class="headerlink" title="经典 Demo"></a>经典 Demo</h3><h4 id="硬编码-Prompt"><a href="#硬编码-Prompt" class="headerlink" title="硬编码 Prompt"></a>硬编码 Prompt</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">review</span>(<span class="hljs-params">code</span>):<br>    <span class="hljs-keyword">return</span> llm(<span class="hljs-string">f&quot;审查下面的代码并给出建议：<span class="hljs-subst">&#123;code&#125;</span>&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>问题：</p>
+<ul>
+<li>难以复用</li>
+<li>难以测试</li>
+<li>修改需要改代码</li>
+<li>无法追踪历史版本</li>
+</ul>
+<h4 id="模板化-Prompt"><a href="#模板化-Prompt" class="headerlink" title="模板化 Prompt"></a>模板化 Prompt</h4><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs 1c"><span class="hljs-meta"># 角色</span><br><br>你是一名 &#123;language&#125; 代码审查员。<br><br><span class="hljs-meta"># 任务</span><br><br>审查以下代码变更：<br><br>&#123;code_diff&#125;<br><br><span class="hljs-meta"># 审查维度</span><br><br>&#123;review_dimensions&#125;<br><br><span class="hljs-meta"># 输出格式</span><br><br>&#123;output_format&#125;<br></code></pre></td></tr></table></figure>
+
+<p>渲染模板：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">render_prompt</span>(<span class="hljs-params">template, **variables</span>):<br>    <span class="hljs-keyword">return</span> template.<span class="hljs-built_in">format</span>(**variables)<br></code></pre></td></tr></table></figure>
+
+<h3 id="YAML-模板示例"><a href="#YAML-模板示例" class="headerlink" title="YAML 模板示例"></a>YAML 模板示例</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">id:</span> <span class="hljs-string">code_review</span><br><span class="hljs-attr">version:</span> <span class="hljs-string">&quot;1.2&quot;</span><br><br><span class="hljs-attr">system:</span> <span class="hljs-string">|</span><br><span class="hljs-string">  你是一名专注 &#123;language&#125; 的代码审查员。</span><br><span class="hljs-string"></span><br>  <span class="hljs-string">约束：</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">只报告明确存在的问题</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">最多报告</span> &#123;<span class="hljs-string">max_issues</span>&#125; <span class="hljs-string">个问题</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">按严重程度排序</span><br><br><span class="hljs-attr">user:</span> <span class="hljs-string">|</span><br><span class="hljs-string">  请审查以下代码：</span><br><span class="hljs-string"></span><br>  &#123;<span class="hljs-string">code_diff</span>&#125;<br><br><span class="hljs-attr">output:</span> <span class="hljs-string">|</span><br><span class="hljs-string">  输出字段：</span><br><span class="hljs-string">  - verdict</span><br><span class="hljs-string">  - score</span><br><span class="hljs-string">  - issues</span><br><span class="hljs-string">  - summary</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="推荐目录结构"><a href="#推荐目录结构" class="headerlink" title="推荐目录结构"></a>推荐目录结构</h3><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><span class="hljs-symbol">prompts</span>/<br>├── code_review/<br>│   ├── <span class="hljs-built_in">v1</span>.<span class="hljs-number">0</span>.yaml<br>│   ├── <span class="hljs-built_in">v1</span>.<span class="hljs-number">1</span>.yaml<br>│   └── <span class="hljs-built_in">v1</span>.<span class="hljs-number">2</span>.yaml<br>├── customer_service/<br>│   └── <span class="hljs-built_in">v1</span>.<span class="hljs-number">0</span>.yaml<br>└── data_analysis/<br>    └── <span class="hljs-built_in">v1</span>.<span class="hljs-number">0</span>.yaml<br></code></pre></td></tr></table></figure>
+
+<h3 id="版本记录"><a href="#版本记录" class="headerlink" title="版本记录"></a>版本记录</h3><p>每个 Prompt 版本建议记录：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ID</td>
+<td>Prompt 的唯一名称</td>
+</tr>
+<tr>
+<td>Version</td>
+<td>当前版本</td>
+</tr>
+<tr>
+<td>Description</td>
+<td>用途</td>
+</tr>
+<tr>
+<td>Variables</td>
+<td>所需变量</td>
+</tr>
+<tr>
+<td>Model</td>
+<td>使用的模型</td>
+</tr>
+<tr>
+<td>Success rate</td>
+<td>任务成功率</td>
+</tr>
+<tr>
+<td>Latency</td>
+<td>平均响应时间</td>
+</tr>
+<tr>
+<td>Token cost</td>
+<td>平均 Token 成本</td>
+</tr>
+</tbody></table>
+<h3 id="A-B-测试"><a href="#A-B-测试" class="headerlink" title="A&#x2F;B 测试"></a>A&#x2F;B 测试</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">select_prompt</span>(<span class="hljs-params">user_id, prompt_a, prompt_b</span>):<br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">hash</span>(user_id) % <span class="hljs-number">2</span> == <span class="hljs-number">0</span>:<br>        <span class="hljs-keyword">return</span> prompt_a<br><br>    <span class="hljs-keyword">return</span> prompt_b<br></code></pre></td></tr></table></figure>
+
+<p>测试时应比较：</p>
+<ul>
+<li>任务成功率</li>
+<li>格式正确率</li>
+<li>人工评分</li>
+<li>响应时间</li>
+<li>Token 成本</li>
+</ul>
+<h3 id="适用场景-3"><a href="#适用场景-3" class="headerlink" title="适用场景"></a>适用场景</h3><ul>
+<li>生产环境 Agent</li>
+<li>团队共享 Prompt</li>
+<li>多模型应用</li>
+<li>持续优化系统</li>
+<li>Prompt A&#x2F;B 测试</li>
+</ul>
+<hr>
+<h1 id="Prompt-工程五要素"><a href="#Prompt-工程五要素" class="headerlink" title="Prompt 工程五要素"></a>Prompt 工程五要素</h1><table>
+<thead>
+<tr>
+<th>要素</th>
+<th>主要作用</th>
+<th>关键实践</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>System Prompt</td>
+<td>定义 Agent 的行为</td>
+<td>角色、目标、流程、边界</td>
+</tr>
+<tr>
+<td>Few-shot</td>
+<td>用示例校准模型</td>
+<td>选择少量相关示例</td>
+</tr>
+<tr>
+<td>角色与约束</td>
+<td>控制视角和边界</td>
+<td>Prompt 引导加代码检查</td>
+</tr>
+<tr>
+<td>输出格式</td>
+<td>连接下游程序</td>
+<td>Schema 与结构化输出</td>
+</tr>
+<tr>
+<td>模板管理</td>
+<td>支持复用和迭代</td>
+<td>配置化、版本化、测试</td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="完整示例：代码审查-Agent"><a href="#完整示例：代码审查-Agent" class="headerlink" title="完整示例：代码审查 Agent"></a>完整示例：代码审查 Agent</h1><h2 id="Prompt-模板"><a href="#Prompt-模板" class="headerlink" title="Prompt 模板"></a>Prompt 模板</h2><figure class="highlight ldif"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs ldif"><span class="hljs-comment"># 角色</span><br><br>你是一名 Python 代码审查员。<br><br><span class="hljs-comment"># 任务</span><br><br>审查下面的代码变更：<br><br>&#123;code_diff&#125;<br><br><span class="hljs-comment"># 审查范围</span><br><br>1. 逻辑错误<br>2. 安全风险<br>3. 性能问题<br>4. 可维护性问题<br><br><span class="hljs-comment"># 约束</span><br><br><span class="hljs-literal">-</span> 只报告明确存在的问题<br><span class="hljs-literal">-</span> 最多报告 10 个问题<br><span class="hljs-literal">-</span> 按严重程度排序<br><span class="hljs-literal">-</span> 不输出敏感信息<br><br><span class="hljs-comment"># 输出格式</span><br><br>输出 JSON，包含：<br><span class="hljs-literal">-</span> verdict<br><span class="hljs-literal">-</span> score<br><span class="hljs-literal">-</span> issues<br><span class="hljs-literal">-</span> summary<br></code></pre></td></tr></table></figure>
+
+<h2 id="Agent-流程"><a href="#Agent-流程" class="headerlink" title="Agent 流程"></a>Agent 流程</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">CodeReviewAgent</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">review</span>(<span class="hljs-params">self, code_diff</span>):<br>        <span class="hljs-comment"># 1. 渲染模板</span><br>        prompt = <span class="hljs-variable language_">self</span>.prompt_registry.render(<br>            template_id=<span class="hljs-string">&quot;code_review&quot;</span>,<br>            code_diff=code_diff,<br>        )<br><br>        <span class="hljs-comment"># 2. 调用模型</span><br>        raw_output = <span class="hljs-variable language_">self</span>.llm.generate(prompt)<br><br>        <span class="hljs-comment"># 3. 验证结构</span><br>        result = ReviewResult.model_validate_json(raw_output)<br><br>        <span class="hljs-comment"># 4. 检查安全约束</span><br>        validation = <span class="hljs-variable language_">self</span>.constraint_checker.validate(raw_output)<br>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> validation[<span class="hljs-string">&quot;valid&quot;</span>]:<br>            <span class="hljs-keyword">raise</span> ValueError(validation[<span class="hljs-string">&quot;reason&quot;</span>])<br><br>        <span class="hljs-comment"># 5. 返回结构化结果</span><br>        <span class="hljs-keyword">return</span> result<br></code></pre></td></tr></table></figure>
+
+<h2 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h2><figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs arcade">代码变更<br>   ↓<br>加载 Prompt 模板<br>   ↓<br>注入任务上下文<br>   ↓<br>调用大语言模型<br>   ↓<br>验证输出 <span class="hljs-built_in">Schema</span><br>   ↓<br>检查安全约束<br>   ├── 通过 → 返回审查结果<br>   └── 失败 → 修复、重试或拦截<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h1><ol>
+<li>明确写出任务目标和成功标准。</li>
+<li>将指令、上下文、示例和用户输入分区。</li>
+<li>简单任务优先使用 Zero-shot。</li>
+<li>格式敏感或规则特殊时使用 Few-shot。</li>
+<li>不要只依赖 Prompt 执行安全约束。</li>
+<li>程序输入优先使用结构化输出。</li>
+<li>对模型输出进行解析和 Schema 验证。</li>
+<li>Prompt 使用模板管理并记录版本。</li>
+<li>使用真实测试集评估 Prompt，不凭感觉修改。</li>
+<li>同时关注准确率、延迟和 Token 成本。</li>
+</ol>
+<blockquote>
+<p>核心原则：Prompt 负责引导模型，代码负责验证结果，权限系统负责控制风险。</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/szk.github.io/categories/ai/" class="category-chain-item">ai</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/szk.github.io/tags/AI/" class="print-no-link">#AI</a>
+      
+        <a href="/szk.github.io/tags/LLM/" class="print-no-link">#LLM</a>
+      
+        <a href="/szk.github.io/tags/Prompt/" class="print-no-link">#Prompt</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Prompt 工程入门笔记</div>
+      <div>https://jackbrownm.github.io/szk.github.io/2026/08/15/2026-08-15-prompt-engineering/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>jackBrownM</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>August 15, 2026</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/szk.github.io/2026/08/15/2026-08-15-llm-reasoning-planning/" title="LLM 推理与规划技术">
+                        <span class="hidden-mobile">LLM 推理与规划技术</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+      <span>szk blog</span>
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/szk.github.io/js/events.js" ></script>
+<script  src="/szk.github.io/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/szk.github.io/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/szk.github.io/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/szk.github.io/js/color-toggle.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/szk.github.io/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
